@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Annotator</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/bee49abcea.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="script.js"></script>
+
+</head>
+
+<body>
+    <div class="topnav">
+        Image Annotator
+    </div>
+
+    <!--nav bar-->
+    <div class="toolbox">
+        <div class="dropdown">
+            <button class="dropbtn"><i class="fas fa-upload"></i> Upload Images</button>
+            <div class="dropdown-content">
+                <label for="file_upload"><i class="far fa-file"></i> Files</label>
+                <input id="file_upload" type="file" accept="image/*" name="files[]" multiple style="display: none; ">
+                <label for="folder_upload"><i class="far fa-folder"></i> Folder</label>
+                <input id="folder_upload" type="file" webkitdirectory mozdirectory style="display: none;">
+                <label for="json_upload"><i class="fas fa-file-import"></i> Import</label>
+                <input id="json_upload" type="file" style="display: none; ">
+            </div>
+        </div>
+        <!-- <div class="tools"> -->
+        <button id="tools" data-title="Box"><i class="far fa-square"></i></button>
+        <button id="tools" data-title="Zoom In"><i class="fas fa-search-plus"></i></button>
+        <button id="tools" data-title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+        <button id="tools" data-title="Rotate Left"><i class="fas fa-undo"></i></button>
+        <button id="tools" data-title="Rotate Right"><i class="fas fa-redo"></i></button>
+        <button id="export_btn" onclick="exportjson()"><i class="fas fa-file-export"></i> Export</button>
+        <!-- </div> -->
+    </div>
+
+
+    <!-- left side bar for images preview -->
+    <div class="leftpane">
+        <output id="imgnav" />
+    </div>
+    <!-- Main window for labelling -->
+    <div class="middlepane">
+        <div class="container-fluid">
+            <div class="img-container">
+                <img id="expimg">
+            </div>
+            <button id="prevbtn" onclick="previmg()"><i class="fas fa-step-backward"></i></button>
+            <button id="nextbtn" onclick="nextimg()"><i class="fas fa-step-forward"></i></button>
+        </div>
+    </div>
+    <!-- set of labels -->
+    <div class="rightpane">
+        <div class="labelnav">
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
