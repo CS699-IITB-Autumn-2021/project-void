@@ -1,23 +1,173 @@
-<!DOCTYPE html>
 <html>
-<head>
-<script type='text/javascript'
-  src='http://code.jquery.com/jquery-1.9.1.js'></script>
-<style type='text/css'>
-canvas 
-{
-  border: 2px solid red;
-}
-</style>
-<script src="canvas.js">
-</script>
-</head>
-<body>
-  <canvas id="canvas" width=500 height=500></canvas>
-  <br>
-  <button id="clockwise">Clockwise</button>
-  <button id="counterclockwise">Anti Clockwise</button>
-  <button id="zoomin">Zoom In</button>
-  <button id="zoomout">Zoom Out</button>
-</body>
+    <head>
+        <style>
+            #input-box{
+                display: none;
+                position:absolute;
+                z-index:3;
+                padding:20px;
+                background-color: white;
+                border: black;
+                border-radius: 8px;
+                box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+            }
+        </style>
+    </head>
+    <body>
+        <img id="pic" src="idea.png" />
+        <canvas id="canvas" width="800" height="500" style="position: absolute; top:0;left:0;"></canvas>
+
+        <div id="output"> </div>
+
+        <div id="input-box" name="input_box"> Tag: <input type="text" id="input-ele"> </div>
+        <button id="clockwise" >Clockwise</button>
+        <button id="counterclockwise" >Anti Clockwise</button>
+        <button id="zoomin" >Zoom In</button>
+        <button id="zoomout" >Zoom Out</button>
+    </body>
+
+
+
+<script>
+
+
+    window.onload = (event) => {
+    let canvas = document.getElementById('canvas');
+    let pic = document.getElementById('pic');
+    let input_box = document.getElementById('input-box');
+    let input_ele=document.getElementById('input-ele')
+    let results=[]
+    let temp_data={}
+    
+    image_width=pic.clientWidth;
+    image_height=pic.clientHeight;
+    
+    canvas.width=image_width;
+    canvas.height=image_height;
+    let ctx = canvas.getContext('2d');
+    //Variables
+    let canvasx = canvas.offsetLeft;
+    let canvasy = canvas.offsetTop;
+    let last_mousex = last_mousey = 0;
+    let mousex = mousey = 0;
+    let mousedown = false;
+    let rotationAngle = 0;
+
+    
+    //Mousedown
+    canvas.addEventListener('mousedown', function(e) {
+        input_box.style.display='none'
+        input_ele.value= "";
+        last_mousex = parseInt(e.clientX-canvasx);
+        last_mousey = parseInt(e.clientY-canvasy);
+        mousedown = true;
+    });
+
+    function inputLabel(event){
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            alert('to save')
+            
+            console.log(temp_data)
+
+
+        }
+    }
+    
+    //Mouseup
+    canvas.addEventListener('mouseup', function(e) {
+        mousedown = false;
+        input_box.style.top=e.clientY 
+        input_box.style.left= e.clientX
+        input_box.style.display='block'
+        let temp_data={ 'x2':last_mousex , 'y2':last_mousex}
+
+        input_box.addEventListener("keyup", inputLabel)
+
+    });
+
+
+    
+    //Mousemove
+    canvas.addEventListener('mousemove', function(e) {
+        mousex = parseInt(e.clientX-canvasx);
+        mousey = parseInt(e.clientY-canvasy);
+        if(mousedown) {
+            ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+            ctx.beginPath();
+            let width = mousex-last_mousex;
+            let height = mousey-last_mousey;
+            ctx.rect(last_mousex,last_mousey,width,height);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        //Output
+        document.getElementById('output').innerHTML='current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown;
+    
+
+    
+    });
+
+    document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        input_ele.value="";
+        input_box.style.display='none'
+    }
+    };
+
+    document.getElementById ("clockwise").addEventListener ("click", clockFunc, false);
+    document.getElementById ("counterclockwise").addEventListener ("click", anticlockFunc, false);
+    document.getElementById ("zoomin").addEventListener ("click", zoominFunc, false);
+    document.getElementById ("zoomout").addEventListener ("click", zoomoutFunc, false);
+
+
+    function clockFunc()
+    {
+    rotationAngle+=90;
+    drawRotated(rotationAngle); 
+    }
+    function anticlockFunc()
+    { 
+        rotationAngle-=90;
+        drawRotated(rotationAngle);
+    }
+    function drawRotated(degrees){
+        prevWidth=canvas.width;
+        prevHeight=canvas.height;
+        ctx.fillStyle = "rgba(0, 0, 0, 0)";
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.save();
+        canvas.width=prevHeight;
+        canvas.height=prevWidth;
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.rotate(degrees*Math.PI/180);
+        ctx.drawImage(pic,-pic.width/2,-pic.height/2);
+        ctx.restore();    
+    }
+    function zoominFunc()
+    {       
+        var currWidth = pic.clientWidth;
+        pic.style.width = (currWidth + 100) + "px";  
+    
+
+    }
+    function zoomoutFunc()
+    { 
+        var currWidth = pic.clientWidth;
+        if(currWidth-100>0)
+        {
+        pic.style.width = (currWidth - 100) + "px"; 
+        }
+    
+    }
+    }
+    </script>
+    
 </html>
+
+
+
+
