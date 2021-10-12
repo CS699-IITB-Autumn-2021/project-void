@@ -51,6 +51,26 @@ var img_src = {};
 var filelist = [];
 
 $(document).ready(function () {
+
+    //global variables
+    let canvas = document.getElementById('canvas');
+    // let pic = document.getElementById('expimg');
+    let input_box = document.getElementById('input-box');
+    let input_ele=document.getElementById('input-ele');
+    let ctx=canvas.getContext('2d');
+    
+    // let canvasx = canvas.offsetLeft;
+    // let canvasy = canvas.offsetTop;
+    let last_mousex = last_mousey = 0;
+    let mousex = mousey = 0;
+    let mousedown = false;
+
+    let results= {'img':"",'bounding_boxes':[]};
+
+
+
+
+
     if (window.File && window.FileList && window.FileReader) {
         $("#folder_upload,#file_upload").on("change", function (e) {
             var output = document.getElementById("imgnav");
@@ -74,15 +94,108 @@ $(document).ready(function () {
                     output.insertBefore(div, null);
                     img_src[f.name] = temp;
                     filelist.push(f.name);
+
+                    results['img']= f.name
                 });
                 fileReader.readAsDataURL(f);
 
             }
 
+            imageresize();
             // console.log(files);
             // console.log(img_src);
         });
     }
+
+    function imageresize(){
+        $('#expimg').on('load',function(){
+            let pic = document.getElementById('expimg');
+
+            image_width=pic.clientWidth;
+            image_height=pic.clientHeight;
+            
+        
+            canvas.width=image_width;
+            canvas.height=image_height;
+            ctx = canvas.getContext('2d');
+        })
+        
+    
+    }
+
+    //Mousedown
+    canvas.addEventListener('mousedown', function(e) {
+
+        input_box.style.display='none'
+        input_ele.value=""
+
+        let rect = canvas.getBoundingClientRect()
+        last_mousex = parseInt(e.clientX-rect.left);
+        last_mousey = parseInt(e.clientY-rect.top);
+        mousedown = true;
+    });
+
+    function inputLabel(event){
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            alert('to save')
+
+            let input_value=document.getElementById('input-ele').value
+            
+
+            let temp_data={ 'x1':last_mousex, 'y1':last_mousey,'x2':mousex, 'y2':mousey, 'label':input_value}
+            results['bounding_boxes'].push(temp_data)
+           
+            console.log(results);
+        }
+    }
+    
+    //Mouseup
+    canvas.addEventListener('mouseup', function(e) {
+        mousedown = false;
+       
+        input_box.style.top=e.clientY +'px'
+        input_box.style.left= e.clientX+'px'
+
+        // console.log("y:"+ e.clientY +"x:" + e.clientX)
+        input_box.style.display='block'
+
+        input_box.addEventListener("keyup", inputLabel)
+
+    });
+
+
+    
+    //Mousemove
+    canvas.addEventListener('mousemove', function(e) {
+        let rect = canvas.getBoundingClientRect()
+        mousex = parseInt(e.clientX-rect.left);
+        mousey = parseInt(e.clientY-rect.top);
+        if(mousedown) {
+            ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+            ctx.beginPath();
+            let width = mousex-last_mousex;
+            let height = mousey-last_mousey;
+            ctx.rect(last_mousex,last_mousey,width,height);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        //Output
+        document.getElementById('output').innerHTML='current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown;
+    
+    });
+
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { 
+            ctx.clearRect(0,0,canvas.width,canvas.height); 
+            input_ele.value="";
+            input_box.style.display='none'
+        };
+      });
+
+
+
 });
 
 
