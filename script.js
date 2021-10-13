@@ -255,7 +255,8 @@ $(document).ready(function () {
         original=zoominPercent;
         var increased = zoominPercent.toString().concat("%");
         $("#expimg").css("zoom",increased); 
-        $("#canvas").css("zoom",increased); 
+        // $("#canvas").css("zoom",increased); 
+        imageresize();
 
     });
     $("#zoomout").click(function(){ 
@@ -265,7 +266,8 @@ $(document).ready(function () {
         original=zoomoutPercent;
         var decreased = zoomoutPercent.toString().concat("%");
         $("#expimg").css("zoom",decreased);
-        $("#canvas").css("zoom",decreased);
+        // $("#canvas").css("zoom",decreased);
+        imageresize();
         }
     });
 });
