@@ -36,10 +36,10 @@
         </div>
         <!-- <div class="tools"> -->
         <button id="tools" data-title="Box"><i class="far fa-square"></i></button>
-        <button id="tools" data-title="Zoom In"><i class="fas fa-search-plus"></i></button>
-        <button id="tools" data-title="Zoom Out"><i class="fas fa-search-minus"></i></button>
-        <button id="tools" data-title="Rotate Left"><i class="fas fa-undo"></i></button>
-        <button id="tools" data-title="Rotate Right"><i class="fas fa-redo"></i></button>
+        <button id="zoomin" data-title="Zoom In"><i class="fas fa-search-plus"></i></button>
+        <button id="zoomout" data-title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+        <button id="counterclockwise" data-title="Rotate Left"><i class="fas fa-undo"></i></button>
+        <button id="clockwise" data-title="Rotate Right"><i class="fas fa-redo"></i></button>
         <button id="export_btn" onclick="exportjson()"><i class="fas fa-file-export"></i> Export</button>
         <!-- </div> -->
     </div>
@@ -69,6 +69,7 @@
     <!-- set of labels -->
     <div class="rightpane">
         <div class="labelnav">
+            <label id="heading">List of Labels</label>
         <output id="label" />
 
         </div>
