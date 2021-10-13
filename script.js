@@ -138,7 +138,7 @@ $(document).ready(function () {
     function inputLabel(event){
         if (event.keyCode === 13) {
             event.preventDefault();
-            alert('to save')
+            alert('save!')
 
             let input_value=document.getElementById('input-ele').value
             
@@ -154,8 +154,9 @@ $(document).ready(function () {
     canvas.addEventListener('mouseup', function(e) {
         mousedown = false;
        
-        input_box.style.top=e.clientY +'px'
-        input_box.style.left= e.clientX+'px'
+        let rect = canvas.getBoundingClientRect()
+        input_box.style.top=e.clientY-rect.top +'px'
+        input_box.style.left= e.clientX -rect.left+'px'
 
         // console.log("y:"+ e.clientY +"x:" + e.clientX)
         input_box.style.display='block'
@@ -188,7 +189,7 @@ $(document).ready(function () {
 
     $(document).keyup(function(e) {
         if (e.keyCode == 27) { 
-            ctx.clearRect(0,0,canvas.width,canvas.height); 
+            // ctx.clearRect(0,0,canvas.width,canvas.height); 
             input_ele.value="";
             input_box.style.display='none'
         };
