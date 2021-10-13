@@ -66,6 +66,20 @@ html {
     transition: 0.5s;
     
 }
+ #heading {
+    width: 100%;
+     text-align: center;
+      font-size: large; 
+      /* color: #099EA7;
+      background-color: #1A212A;
+      padding: 7px;
+      border: black 2px solid;
+      border-radius: 5px;
+      box-shadow: black 3px;
+      font-family: 'Courier New', Courier, monospace;
+      transition: 0.5s; */
+
+}
 
 button
 {
@@ -100,7 +114,7 @@ button
     color: #099EA7;
 }
 
-#tools:hover{
+#tools:hover, #zoomin:hover, #zoomout:hover, #clockwise:hover, #counterclockwise:hover{
     color: black;
     background-color:#099EA7;
     border: 2px solid #099EA7;
@@ -160,7 +174,7 @@ label:hover, #export_btn:hover, button:hover {
     width: 100%;
     height: 90%; 
     /* margin-left: 13px; */
-    background-color: black;
+    background-color: #242631;
     overflow: auto;
 }
 
