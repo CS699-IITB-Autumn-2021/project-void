@@ -225,7 +225,66 @@ $(document).ready(function () {
         };
       });
 
+      var angle = 0;
+      $('#clockwise').on('click', function() {
+          angle += 90;
+          $('#expimg').css('transform','rotate(' + angle + 'deg)');
+          imageresize();
+          
 
+        for (var i = 0; i < results[pic.title].length; i++) 
+        {
+            var x1=results[pic.title][i]["x1"];
+            var y1=results[pic.title][i]["y1"];
+            var x2=results[pic.title][i]["x2"];
+            var y2=results[pic.title][i]["y2"];
+
+            var rad=angle*Math.PI / 180;
+            var newx1= x1*Math.cos(rad) - y1*Math.sin(rad);
+            var newy1= x1*Math.sin(rad) + y1*Math.cos(rad);
+
+            var newx2= x2*Math.cos(rad) - y2*Math.sin(rad);
+            var newy2= x2*Math.sin(rad) + y2*Math.cos(rad);
+            
+            
+            console.log(x1);
+            console.log(x2);
+            console.log(y1);
+            console.log(y2);
+            console.log(Math.abs(newx1));
+            console.log(Math.abs(newx2));
+            console.log(Math.abs(newy1));
+            console.log(Math.abs(newy2));
+
+            results[pic.title][i]["x1"]=Math.abs(newx1);
+            results[pic.title][i]["y1"]=Math.abs(newy1);
+            results[pic.title][i]["x2"]=Math.abs(newx2);
+            results[pic.title][i]["y2"]=Math.abs(newy2);
+
+            Cx, Cy // the coordinates of your center point in world coordinates
+W      // the width of your rectangle
+H      // the height of your rectangle
+θ      // the angle you wish to rotate
+
+//The offset of a corner in local coordinates (i.e. relative to the pivot point)
+//(which corner will depend on the coordinate reference system used in your environment)
+Ox = W / 2
+Oy = H / 2
+
+//The rotated position of this corner in world coordinates    
+Rx = Cx + (Ox  * cos(θ)) - (Oy * sin(θ))
+Ry = Cy + (Ox  * sin(θ)) + (Oy * cos(θ))
+
+        }
+        });
+      $('#counterclockwise').on('click', function() {
+    angle -= 90;
+    $('#expimg').css('transform','rotate(' + angle + 'deg)');
+        imageresize();
+
+});
+    
+    /*
     $("#clockwise").click(function(){ 
         rotationAngle+=90;
         drawRotated(rotationAngle);
@@ -245,22 +304,90 @@ $(document).ready(function () {
         ctx.rotate(degrees*Math.PI/180);
         ctx.drawImage(pic,-pic.width/2,-pic.height/2);
         ctx.restore();    
-    }
+    }*/
     $("#zoomin").click(function(){ 
-        var zoominPercent = original + 10;
-        original=zoominPercent;
-        var increased = zoominPercent.toString().concat("%");
-        $("#expimg").css("zoom",increased); 
+        var prev=pic.clientWidth;
+        var currWidth = pic.clientWidth;
+        pic.style.width = (currWidth + 100) + "px";
+        var next=pic.clientWidth;
+        var ratio=(next/prev);
+        for (var i = 0; i < results[pic.title].length; i++) {
+            var x1=results[pic.title][i]["x1"];
+            var y1=results[pic.title][i]["y1"];
+            var x2=results[pic.title][i]["x2"];
+            var y2=results[pic.title][i]["y2"];
+
+            var xMid=(x2 - x1)/2 + x1;  
+            var yMid=(y2 - y1)/2 + y1;
+
+            var xLength=(x2 - x1)*ratio;
+            var yLength=(y2 - y1)*ratio;
+
+            var newx1=xMid*ratio-(xLength/2);
+            var newx2=xMid*ratio+(xLength/2);
+
+            var newy1=yMid*ratio-(yLength/2);
+            var newy2=yMid*ratio+(yLength/2);
+
+            results[pic.title][i]["x1"]=newx1;
+            results[pic.title][i]["y1"]=newy1;
+            results[pic.title][i]["x2"]=newx2;
+            results[pic.title][i]["y2"]=newy2;
+
+            // console.log(x1);
+            // console.log(y1);
+            // console.log(x2);
+            // console.log(y2);
+            // console.log(newx1);
+            // console.log(newy1);
+            // console.log(newx2);
+            // console.log(newy2);
+
+
+        }
 
     });
     $("#zoomout").click(function(){ 
-        var zoomoutPercent = original - 10;
-        if(zoomoutPercent>0)
-        {
-        original=zoomoutPercent;
-        var decreased = zoomoutPercent.toString().concat("%");
-        $("#expimg").css("zoom",decreased);
+        var prev=pic.clientWidth;
+        var currWidth = pic.clientWidth;
+        pic.style.width = (currWidth - 100) + "px";
+        var next=pic.clientWidth;
+        var ratio=(next/prev);
+        for (var i = 0; i < results[pic.title].length; i++) {
+            var x1=results[pic.title][i]["x1"];
+            var y1=results[pic.title][i]["y1"];
+            var x2=results[pic.title][i]["x2"];
+            var y2=results[pic.title][i]["y2"];
+            
+            var xMid=(x2 - x1)/2 + x1;  
+            var yMid=(y2 - y1)/2 + y1;
+
+            var xLength=(x2 - x1)*ratio;
+            var yLength=(y2 - y1)*ratio;
+
+            var newx1=xMid*ratio-(xLength/2);
+            var newx2=xMid*ratio+(xLength/2);
+
+            var newy1=yMid*ratio-(yLength/2);
+            var newy2=yMid*ratio+(yLength/2);
+
+            results[pic.title][i]["x1"]=newx1;
+            results[pic.title][i]["y1"]=newy1;
+            results[pic.title][i]["x2"]=newx2;
+            results[pic.title][i]["y2"]=newy2;
+
+            // console.log(x1);
+            // console.log(y1);
+            // console.log(x2);
+            // console.log(y2);
+            // console.log(newx1);
+            // console.log(newy1);
+            // console.log(newx2);
+            // console.log(newy2);
+
+
         }
+
     });
 });
 
