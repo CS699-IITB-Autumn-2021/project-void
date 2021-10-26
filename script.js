@@ -363,29 +363,10 @@ $(document).ready(function () {
             var y2 = mousey;
             var currWidth=pic.clientWidth;
             var ratio = (originalWidth /currWidth );
-            var zoomed=0;
-            if(originalWidth!=currWidth)
-            {
-                zoomed=1;
-                var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
-                // console.log(newboxes[0]);
-                // console.log(newboxes[1]);
-                // console.log(newboxes[2]);
-                // console.log(newboxes[3]);
-
-                var newzx1 = newboxes[0];
-                var newzy1 = newboxes[1];
-                var newzx2 = newboxes[2];
-                var newzy2 = newboxes[3];
-
-                temp_data[input_value] = [newzx1, newzy1, newzx2, newzy2];
-
-            }
-            else
-            {
-                temp_data[input_value] = [x1, y1, x2, y2];
-            }
+            var rotated=0;
+            
             if (angle % 360 != 0) {
+                rotated=1;
                 // console.log(angle % 360);
                 if (angle % 360 == 90) {
                     var newx1 = y1;
@@ -410,9 +391,29 @@ $(document).ready(function () {
                 }
 
                 temp_data[input_value] = [newx1, newy1, newx2, newy2];
+                x1=newx1;
+                y1=newy1;
+                x2=newx2;
+                y2=newy2;
 
             }
-            else if(zoomed==0)
+            if(originalWidth!=currWidth)
+            {
+                var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
+                // console.log(newboxes[0]);
+                // console.log(newboxes[1]);
+                // console.log(newboxes[2]);
+                // console.log(newboxes[3]);
+
+                var newzx1 = newboxes[0];
+                var newzy1 = newboxes[1];
+                var newzx2 = newboxes[2];
+                var newzy2 = newboxes[3];
+
+                temp_data[input_value] = [newzx1, newzy1, newzx2, newzy2];
+                
+            }
+            else
             {
                 temp_data[input_value] = [x1, y1, x2, y2];
             }
