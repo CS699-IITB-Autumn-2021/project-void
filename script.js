@@ -1,8 +1,8 @@
 
 /**
- * Opens the image on the main window for labelling when a thumbnail is clicked from the left navigation bar
+ * Opens the image on the main window for labelling when a thumbnail is clicked from the left side bar
  *
- * @param {JS Object} img - contains image details
+ * @param {string} img - contains image details
  */
 function ExpandImg(img) {
     var expandimg = document.getElementById("expimg")
@@ -20,12 +20,18 @@ function ExpandImg(img) {
     angle = 0;
     displaylabels(img.title);
 
+    console.log(results[img.title]);
+    console.log(temp_res[img.title]);
+
 }
 
 /**
  * To draw the bounding box corresponding to the label
  *
- * @param {int,int,int,int} x1,y1,x2,y2 - co-ordinates of the bounding box
+ * @param {int}  - x1 co-ordinate of the bounding box
+ * @param {int}  - y1 co-ordinate of the bounding box
+ * @param {int}  - x2 co-ordinate of the bounding box
+ * @param {int}  - y2 co-ordinate of the bounding box
  */
 function drawlabelrect(x1, y1, x2, y2) {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
@@ -34,7 +40,11 @@ function drawlabelrect(x1, y1, x2, y2) {
     ctx.lineWidth = 3;
 }
 
-
+/**
+ * To delete the label along with the bounding box
+ *
+ * @param {Array}  - string array of image title and corresponding label to delete
+ */
 function deletelabel(delarg) {
     var arg = delarg.split(",");
     var tmp = -1;
@@ -56,6 +66,11 @@ function deletelabel(delarg) {
 
 }
 
+/**
+ * To display the labels on the right side bar
+ *
+ * @param {string}  - image title
+ */
 function displaylabels(img) {
     var labellist = document.getElementById("label");
     labellist.innerHTML = "";
@@ -74,6 +89,11 @@ function displaylabels(img) {
 }
 
 
+/**
+ * To display the labels from the imported annotation file in the right side bar
+ *
+ * @param {string}  - image title
+ */
 function displayimportedlabels(img) {
     var labellist = document.getElementById("label");
     labellist.innerHTML = "";
@@ -91,6 +111,10 @@ function displayimportedlabels(img) {
 
 
 
+/**
+ * Draws the imported annotation file lables and calls displayimportedlabels() function
+ *
+ */
 function importlabels() {
     console.log(impjson);
     var img = document.getElementById("expimg")
@@ -100,7 +124,7 @@ function importlabels() {
             for (var i = 0; i < value.length; i++) {
                 for (const [k, v] of Object.entries(value[i])) {
                     // drawimplabels(v[0], v[1], v[2], v[3]);
-                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+                    ctx.strokeRect(v[0], v[1], v[2] - v[0], v[3] - v[1]);
                     ctx.strokeStyle = 'red';
                     ctx.lineWidth = 3;
                     displayimportedlabels(img.title);
@@ -113,18 +137,31 @@ function importlabels() {
 
 
 
-
-/*To slide to next image on the main window when a next button is clicked*/
-/*these buttons follow a circular loop on thumbnail images*/
+/**
+ * To slide to next image on the main window when a next button is clicked. These buttons follow a circular loop on thumbnail images
+ *
+ */
 function nextimg() {
     var currimg = document.getElementById("expimg");
     var index = filelist.indexOf(currimg.title);
     currimg.src = img_src[filelist[(index + 1) % (filelist.length)]][0];
     currimg.title = filelist[(index + 1) % (filelist.length)];
+    $('#expimg').css('transform', 'rotate(' + 0 + 'deg)');
+    $("#expimg").css({
+        'top': 0,
+        'position': 'relative',
+        'left': 0
+    });
+    expandimg.style.width = img_src[img.title][1] + "px";
+    temp_res[img.title] = JSON.parse(JSON.stringify(results[img.title]));
+    angle = 0;
     displaylabels(currimg.title);
 
 }
-/*To slide to previous image on the main window when a previous button is clicked*/
+/**
+ * To slide to previous image on the main window when a next button is clicked. These buttons follow a circular loop on thumbnail images
+ *
+ */
 function previmg() {
     var currimg = document.getElementById("expimg");
     var index = filelist.indexOf(currimg.title);
@@ -132,12 +169,23 @@ function previmg() {
         index = filelist.length;
     currimg.src = img_src[filelist[(index - 1)]][0];
     currimg.title = filelist[(index - 1)];
+    $('#expimg').css('transform', 'rotate(' + 0 + 'deg)');
+    $("#expimg").css({
+        'top': 0,
+        'position': 'relative',
+        'left': 0
+    });
+    expandimg.style.width = img_src[img.title][1] + "px";
+    temp_res[img.title] = JSON.parse(JSON.stringify(results[img.title]));
+    angle = 0;
     displaylabels(currimg.title);
 
 }
 
-/*To download the output json file with image labels*/
-//needs to be updated
+/**
+ * To download the output json file with image labels
+ *
+ */
 function exportjson() {
     const filename = 'data.json';
     const jsonStr = JSON.stringify(results);
@@ -150,6 +198,10 @@ function exportjson() {
     document.body.removeChild(element);
 }
 
+/**
+ * To download the output csv file with image labels
+ *
+ */
 function exportcsv() {
     const filename = 'data.csv';
     str = "filename,label,x1,y1,x2,y2\n";
@@ -162,7 +214,6 @@ function exportcsv() {
         }
     }
     console.log(str);
-    // const jsonStr = JSON.stringify(str);
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
     element.setAttribute('download', filename);
@@ -177,8 +228,7 @@ function exportcsv() {
 /* img_src stores the details of the images uploaded. image title is the key and details are in the value.
  Ex: {'img1 title':['img src','img width','img height'],'img2 title':['img src','img width','img height']}*/
 var img_src = {};
-// filelist array stores the image titles in the order of the thumbnails
-var filelist = [];
+var filelist = [];  // filelist array stores the image titles in the order of the thumbnails
 var results = {};
 let impjson = {};
 var canvas;
@@ -186,11 +236,12 @@ var ctx;
 var rotationAngle = 0;
 var original = 100;
 var temp_res = {};
+
+
 $(document).ready(function () {
 
     //global variables
     canvas = document.getElementById('canvas');
-    // let pic = document.getElementById('expimg');
     let input_box = document.getElementById('input-box');
     let input_ele = document.getElementById('input-ele');
     ctx = canvas.getContext('2d');
@@ -201,13 +252,10 @@ $(document).ready(function () {
     let mousex = mousey = 0;
     let mousedown = false;
     var pic;
-    //  results= {'img':"",'bounding_boxes':[]};
-
-
-
-
 
     if (window.File && window.FileList && window.FileReader) {
+
+
         $("#folder_upload,#file_upload").on("change", function (e) {
             var output = document.getElementById("imgnav");
             var files = e.target.files;
@@ -240,11 +288,11 @@ $(document).ready(function () {
 
             imageresize();
         });
+
         $("#json_upload").on("change", function (e) {
 
             var reader = new FileReader();
             var filetype = e.target.files[0].name;
-            // console.log(filetype.name);
             reader.onload = function (e) {
                 if (filetype.split('.').pop() == "csv") {
                     var res = {};
@@ -287,7 +335,6 @@ $(document).ready(function () {
             image_width = pic.width;
             image_height = pic.height;
 
-            console.log(image_width);
             canvas.width = image_width;
             canvas.height = image_height;
             ctx = canvas.getContext('2d');
@@ -297,7 +344,11 @@ $(document).ready(function () {
     }
 
 
-    function imageresize2() {
+    /**
+     * Resize the canvas when the image is zoomed using the current image's dimensions
+     * 
+     */
+    function canvasresize_zoom() {
         pic = document.getElementById('expimg');
 
         image_width = pic.clientWidth;
@@ -311,7 +362,12 @@ $(document).ready(function () {
 
     }
 
-    function imageresize3(angle) {
+    
+    /**
+     * Resize the canvas when the image is rotated using the current image's dimensions
+     * 
+     */
+    function canvasresize_rotate(angle) {
         pic = document.getElementById('expimg');
 
         image_width = pic.clientWidth;
@@ -357,6 +413,8 @@ $(document).ready(function () {
             var y1 = last_mousey;
             var x2 = mousex;
             var y2 = mousey;
+
+            // if box is drawn over a rotated image, calculate the coordinates of box of original orientation and add it to the results
             if (angle % 360 != 0) {
                 console.log(angle % 360);
                 if (angle % 360 == 90) {
@@ -384,26 +442,22 @@ $(document).ready(function () {
                 temp_data[input_value] = [newx1, newy1, newx2, newy2];
 
                 results[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
-                temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
-
-                //  document.getElementById("clockwise").click();
-                //  document.getElementById("clockwise").click();
-                //  document.getElementById("clockwise").click();
-                //  document.getElementById("clockwise").click();
-                displaylabels(pic.title);
 
             }
+
+            //else if box is drawn on original image add it directly to results
             else {
                 temp_data[input_value] = [x1, y1, x2, y2];
                 results[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
-                temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
-                displaylabels(pic.title);
-
-
             }
 
-            console.log(results);
-            console.log(temp_res);
+            //add the current coordinates of the box to temporary results
+            temp_data[input_value] = [x1, y1, x2, y2];
+            temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
+            displaylabels(pic.title);
+
+            console.log(results[pic.title]);
+            console.log(temp_res[pic.title]);
             // console.log(results);
         }
     }
@@ -457,6 +511,8 @@ $(document).ready(function () {
     $('#clockwise').on('click', function () {
         angle += 90;
         $('#expimg').css('transform', 'rotate(' + angle + 'deg)');
+
+        // calculating top_offset and left_offset to maintain image position with respect to the canvas when rotated
         var topoffset = (pic.width / 2 - pic.height / 2) * ((angle % 180) / 90);
         var leftoffset = (pic.width - pic.height) / 2 * ((angle % 180) / 90);;
         $("#expimg").css({
@@ -464,9 +520,11 @@ $(document).ready(function () {
             'position': 'relative',
             'left': -leftoffset
         });
-        imageresize3(angle);
 
+        //resize the canvas wrt to angle
+        canvasresize_rotate(angle);
 
+        //rotate all the bouding boxes wrt to the angle rotated
         for (var i = 0; i < results[pic.title].length; i++) {
             for (const [key, value] of Object.entries(results[pic.title][i])) {
 
@@ -476,6 +534,8 @@ $(document).ready(function () {
                 var y2 = value[3];
 
                 var ratio = pic.clientWidth / img_src[pic.title][1];
+
+                //to retrieve the resized boxes if the image is zoomed
                 var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
 
 
@@ -485,7 +545,7 @@ $(document).ready(function () {
                 y2 = newboxes[3];
 
 
-
+                //change the coordinates of the box w.r.t the angle rotated
                 if (angle % 360 == 90) {
                     var newx1 = pic.height - y1;
                     var newy1 = x1;
@@ -515,7 +575,10 @@ $(document).ready(function () {
                     var newy2 = y2;
                 }
 
+                //store the new coordinates in temporary results
                 temp_res[pic.title][i][key] = [Math.abs(newx1), Math.abs(newy1), Math.abs(newx2), Math.abs(newy2)];
+                console.log(results[pic.title][i][key]);
+                console.log(temp_res[pic.title][i][key]);
             }
         }
         displaylabels(pic.title);
@@ -526,6 +589,8 @@ $(document).ready(function () {
     $('#counterclockwise').on('click', function () {
         angle -= 90;
         $('#expimg').css('transform', 'rotate(' + angle + 'deg)');
+
+        // calculating top_offset and left_offset to maintain image position with respect to the canvas when rotated
         var topoffset = (pic.width / 2 - pic.height / 2) * ((Math.abs(angle) % 180) / 90);
         var leftoffset = (pic.width - pic.height) / 2 * ((Math.abs(angle) % 180) / 90);;
         $("#expimg").css({
@@ -533,8 +598,11 @@ $(document).ready(function () {
             'position': 'relative',
             'left': -leftoffset
         });
-        imageresize3(angle);
 
+        //resize the canvas wrt to angle
+        canvasresize_rotate(angle);
+
+        //rotate all the bouding boxes wrt to the angle rotated
         for (var i = 0; i < results[pic.title].length; i++) {
             for (const [key, value] of Object.entries(results[pic.title][i])) {
 
@@ -543,16 +611,16 @@ $(document).ready(function () {
                 var x2 = value[2];
                 var y2 = value[3];
 
-
-
+                //to retrieve the resized boxes if the image is zoomed
                 var ratio = pic.clientWidth / img_src[pic.title][1];
                 var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
+
                 x1 = newboxes[0];
                 y1 = newboxes[1];
                 x2 = newboxes[2];
                 y2 = newboxes[3];
 
-
+                //change the coordinates of the box w.r.t the angle rotated
                 if (angle % 360 == 90) {
                     var newx1 = pic.height - y1;
                     var newy1 = x1;
@@ -582,7 +650,7 @@ $(document).ready(function () {
                     var newy2 = y2;
                 }
 
-
+                //store the new coordinates in temporary results
                 temp_res[pic.title][i][key] = [Math.abs(newx1), Math.abs(newy1), Math.abs(newx2), Math.abs(newy2)];
 
             }
@@ -591,8 +659,18 @@ $(document).ready(function () {
 
     });
 
-    function resizeboxes(x1, y1, x2, y2, ratio) {
 
+    /**
+    * Resizes the bounding boxes when the image is zoomed in or zoomed out.
+    * @param{int} x1 - x1 coordinate of the bouding box
+    * @param{int} y1 - y1 coordinate of the bouding box
+    * @param{int} x2 - x2 coordinate of the bouding box
+    * @param{int} y2 - t2 coordinate of the bouding box
+    * @param{int} ratio - ratio of the zoomed image width to the previous image width
+    * 
+    * @return{Array<int>} Array of resized coordinates of the bouding box.
+    */
+    function resizeboxes(x1, y1, x2, y2, ratio) {
 
         var xMid = (x2 - x1) / 2 + x1;
         var yMid = (y2 - y1) / 2 + y1;
@@ -607,8 +685,6 @@ $(document).ready(function () {
         var newy2 = yMid * ratio + (yLength / 2);
 
         return [newx1, newy1, newx2, newy2];
-
-
     }
 
 
@@ -618,7 +694,10 @@ $(document).ready(function () {
         pic.style.width = (currWidth + 100) + "px";
         var next = pic.clientWidth;
         var ratio = (next / prev);
-        imageresize2();
+
+        //resize canvas w.r.t the zoomed image
+        canvasresize_zoom();
+
         for (var i = 0; i < temp_res[pic.title].length; i++) {
             for (const [key, value] of Object.entries(temp_res[pic.title][i])) {
 
@@ -627,7 +706,7 @@ $(document).ready(function () {
                 var x2 = value[2];
                 var y2 = value[3];
 
-
+                // retrieve the resized coordinates of the bounding box
                 var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
                 console.log(newboxes);
 
@@ -636,6 +715,7 @@ $(document).ready(function () {
                 newx2 = newboxes[2];
                 newy2 = newboxes[3];
 
+                //store in the temporary results
                 temp_res[pic.title][i][key] = [newx1, newx2, newy1, newy2];
 
                 displaylabels(pic.title);
@@ -645,13 +725,19 @@ $(document).ready(function () {
         }
 
     });
+
+
     $("#zoomout").click(function () {
         var prev = pic.clientWidth;
         var currWidth = pic.clientWidth;
         pic.style.width = (currWidth - 100) + "px";
         var next = pic.clientWidth;
         var ratio = (next / prev);
-        imageresize2();
+
+        //resize canvas w.r.t the zoomed image
+        canvasresize_zoom();
+
+
         for (var i = 0; i < temp_res[pic.title].length; i++) {
             for (const [key, value] of Object.entries(temp_res[pic.title][i])) {
 
@@ -660,6 +746,7 @@ $(document).ready(function () {
                 var x2 = value[2];
                 var y2 = value[3];
 
+                // retrieve the resized coordinates of the bounding box
                 var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
                 console.log(newboxes);
                 newx1 = newboxes[0];
@@ -667,6 +754,7 @@ $(document).ready(function () {
                 newx2 = newboxes[2];
                 newy2 = newboxes[3];
 
+                //store in the temporary results
                 temp_res[pic.title][i][key] = [newx1, newy1, newx2, newy2];
 
                 displaylabels(pic.title);
