@@ -24,13 +24,13 @@
     <!--nav bar-->
     <div class="toolbox">
         <div class="dropdown">
-            <button class="dropbtn"><i class="fas fa-upload"></i> Upload Images</button>
+            <button class="dropbtn"><i class="fas fa-upload"></i> Upload files/folder</button>
             <div class="dropdown-content">
-                <label for="file_upload"><i class="far fa-file"></i> Files</label>
+                <label for="file_upload"><i class="far fa-file"></i> Image Files</label>
                 <input id="file_upload" type="file" accept="image/*" name="files[]" multiple style="display: none; ">
-                <label for="folder_upload"><i class="far fa-folder"></i> Folder</label>
+                <label for="folder_upload"><i class="far fa-folder"></i> Image Folder</label>
                 <input id="folder_upload" type="file" webkitdirectory mozdirectory style="display: none;">
-                <label for="json_upload"><i class="fas fa-file-import"></i> Import</label>
+                <label for="json_upload" title="Upload in csv or json format"><i class="fas fa-file-import"></i> Import Labels</label>
                 <input id="json_upload" type="file" style="display: none; ">
             </div>
         </div>
@@ -73,8 +73,8 @@
                 <div id="input-box"> Tag: <input type="text" name="input-ele" id="input-ele"> </div>
             </div>
 
-            <button id="prevbtn" onclick="previmg()"><i class="fas fa-step-backward"></i></button>
-            <button id="nextbtn" onclick="nextimg()"><i class="fas fa-step-forward"></i></button>
+            <button id="prevbtn" title="previous image" onclick="previmg()"><i class="fas fa-step-backward"></i></button>
+            <button id="nextbtn" title="next image" onclick="nextimg()"><i class="fas fa-step-forward"></i></button>
         </div>
     </div>
     <!-- set of labels -->
