@@ -36,8 +36,8 @@ function ExpandImg(img) {
 function drawlabelrect(x1, y1, x2, y2) {
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
     ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
 }
 
 /**
@@ -98,8 +98,10 @@ function displayimportedlabels(img) {
     var labellist = document.getElementById("label");
     labellist.innerHTML = "";
     let tmplab = impjson[img];
+    var div = document.createElement("div");
+    div.innerHTML = "<label onclick=\"importlabels( )\"style=\"border:cornsilk 2px solid; font-weight:bold\";>" + "Display All Labels" + "</label>";
+    labellist.insertBefore(div, null);
     for (var i = 0; i < tmplab.length; i++) {
-
         for (const [key, value] of Object.entries(tmplab[i])) {
             var div = document.createElement("div");
             var coord = value[0] + "," + value[1] + "," + value[2] + "," + value[3];
@@ -117,7 +119,15 @@ function displayimportedlabels(img) {
  */
 function importlabels() {
     console.log(impjson);
-    var img = document.getElementById("expimg")
+    var img = document.getElementById("expimg");
+    $('#expimg').css('transform', 'rotate(' + 0 + 'deg)');
+    $("#expimg").css({
+        'top': 0,
+        'position': 'relative',
+        'left': 0
+    });
+    img.style.width = img_src[img.title][1] + "px";
+    angle = 0;
 
     for (const [key, value] of Object.entries(impjson)) {
         if (img.title == key) {
@@ -125,8 +135,8 @@ function importlabels() {
                 for (const [k, v] of Object.entries(value[i])) {
                     // drawimplabels(v[0], v[1], v[2], v[3]);
                     ctx.strokeRect(v[0], v[1], v[2] - v[0], v[3] - v[1]);
-                    ctx.strokeStyle = 'red';
-                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 2;
                     displayimportedlabels(img.title);
                 }
             }
@@ -234,6 +244,7 @@ let impjson = {};
 var canvas;
 var ctx;
 var rotationAngle = 0;
+var angle = 0;
 var original = 100;
 var temp_res = {};
 
@@ -414,6 +425,12 @@ $(document).ready(function () {
             var x2 = mousex;
             var y2 = mousey;
 
+            var currWidth=pic.clientWidth;
+            var ratio = (img_src[pic.title][1] /currWidth );
+            
+            temp_data[input_value]=[x1,y1,x2,y2];
+            temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
+
             // if box is drawn over a rotated image, calculate the coordinates of box of original orientation and add it to the results
             if (angle % 360 != 0) {
                 console.log(angle % 360);
@@ -438,22 +455,31 @@ $(document).ready(function () {
                     var newx2 = pic.width - y2
                     var newy2 = x2;
                 }
-
-                temp_data[input_value] = [newx1, newy1, newx2, newy2];
-
-                results[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
+                x1=newx1;
+                y1=newy1;
+                x2=newx2;
+                y2=newy2;
 
             }
+            if(img_src[pic.title][1]!=currWidth)
+            {
+                var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
 
-            //else if box is drawn on original image add it directly to results
-            else {
+                var newzx1 = newboxes[0];
+                var newzy1 = newboxes[1];
+                var newzx2 = newboxes[2];
+                var newzy2 = newboxes[3];
+
+                temp_data[input_value] = [newzx1, newzy1, newzx2, newzy2];
+                
+            }
+
+            else
+            {
                 temp_data[input_value] = [x1, y1, x2, y2];
-                results[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
             }
 
-            //add the current coordinates of the box to temporary results
-            temp_data[input_value] = [x1, y1, x2, y2];
-            temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
+            results[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
             displaylabels(pic.title);
 
             console.log(results[pic.title]);
@@ -488,8 +514,8 @@ $(document).ready(function () {
             let width = mousex - last_mousex;
             let height = mousey - last_mousey;
             ctx.rect(last_mousex, last_mousey, width, height);
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
             ctx.stroke();
         }
         //Output
@@ -505,7 +531,6 @@ $(document).ready(function () {
         };
     });
 
-    var angle = 0;
 
 
     $('#clockwise').on('click', function () {
@@ -582,6 +607,9 @@ $(document).ready(function () {
             }
         }
         displaylabels(pic.title);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+        // drawlabelrect(newx1,newy1,newx2,newy2);
+
 
     });
 
@@ -598,6 +626,8 @@ $(document).ready(function () {
             'position': 'relative',
             'left': -leftoffset
         });
+
+
 
         //resize the canvas wrt to angle
         canvasresize_rotate(angle);
@@ -656,7 +686,8 @@ $(document).ready(function () {
             }
         }
         displaylabels(pic.title);
-
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+        // drawlabelrect(newx1,newy1,newx2,newy2);
     });
 
 
@@ -689,6 +720,11 @@ $(document).ready(function () {
 
 
     $("#zoomin").click(function () {
+        // $("#expimg").css({
+        //     'top': 0,
+        //     'position': 'relative',
+        //     'left': 0
+        // });
         var prev = pic.clientWidth;
         var currWidth = pic.clientWidth;
         pic.style.width = (currWidth + 100) + "px";
@@ -716,18 +752,26 @@ $(document).ready(function () {
                 newy2 = newboxes[3];
 
                 //store in the temporary results
-                temp_res[pic.title][i][key] = [newx1, newx2, newy1, newy2];
-
-                displaylabels(pic.title);
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+                temp_res[pic.title][i][key] = [newx1, newy1, newx2, newy2];
+                console.log(temp_res[pic.title][i][key]);
+                console.log(results[pic.title][i][key]);
+           
             }
         }
+        displaylabels(pic.title);
+ 
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+        drawlabelrect(newx1,newy1,newx2,newy2);
 
     });
 
 
     $("#zoomout").click(function () {
+        // $("#expimg").css({
+        //     'top': 0,
+        //     'position': 'relative',
+        //     'left': 0
+        // });
         var prev = pic.clientWidth;
         var currWidth = pic.clientWidth;
         pic.style.width = (currWidth - 100) + "px";
@@ -757,10 +801,13 @@ $(document).ready(function () {
                 //store in the temporary results
                 temp_res[pic.title][i][key] = [newx1, newy1, newx2, newy2];
 
-                displaylabels(pic.title);
-                ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+
             }
         }
+        
+        displaylabels(pic.title);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+        drawlabelrect(newx1,newy1,newx2,newy2);
 
     });
 
