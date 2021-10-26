@@ -35,6 +35,10 @@ html {
     background-color: #242631;
 }
 
+#icons {
+    width:100%;
+    height:100%;
+}
 
 .toolbox {
     padding: 5px;
@@ -43,15 +47,16 @@ html {
 }
 
 .topnav {
-    background-color: #141526;
+    background-color:#141526;
     padding: 5px;
     height: 6%;
     margin: auto;
     text-align: center;
-    color: #099EA7;
+    color: #4682B4;
     font-size: 25px;
+    /* font-style: oblique; */
     font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 500px;
+    font-weight: 900px;
 }
 
  label {
@@ -65,6 +70,12 @@ html {
     cursor: pointer;
     transition: 0.5s;
     
+}
+ #heading {
+    width: 100%;
+     text-align: center;
+      font-size: large; 
+      border: #099EA7 2px solid;
 }
 
 button
@@ -96,15 +107,18 @@ button
     /* left: 100%; */
     white-space: nowrap;
 }
-#tools {
-    color: #099EA7;
-}
 
-#tools:hover{
+#tools:hover, #zoomin:hover, #zoomout:hover, #clockwise:hover, #counterclockwise:hover{
     color: black;
     background-color:#099EA7;
     border: 2px solid #099EA7;
     transform: scale(1.25);
+}
+
+#tools, #zoomin, #zoomout, #clockwise, #counterclockwise{
+    color: black;
+    background-color:#099EA7;
+    border: 2px solid #099EA7;
 }
 
 label:hover, #export_btn:hover, button:hover {
@@ -120,9 +134,10 @@ label:hover, #export_btn:hover, button:hover {
     /* display: flex; */
     /* justify-content: flex-end; */
     /* margin-left: auto; */
-    position: absolute;
-    right: 0;
-    width: 100px;
+    /* position: absolute; */
+    /* right: 0; */
+    text-align: left;
+    width: 100%;
     /* margin-right: 8px; */
     font-weight: bold;
 }
@@ -137,6 +152,23 @@ label:hover, #export_btn:hover, button:hover {
     background-color:#050A30;
     border-right:black 2px;
     display: inline-block;
+}
+
+.labelnav
+{
+    width: 100%;
+    height: 100%;
+    max-height: calc(100vh - 10xrem);
+    overflow-y: auto;
+    z-index: 1;
+    border-left:black 2px;
+    display: inline-block;
+
+}
+
+#dellabel
+{
+    margin-left: 10px;
 }
 
 #tbimg {
@@ -160,7 +192,7 @@ label:hover, #export_btn:hover, button:hover {
     width: 100%;
     height: 90%; 
     /* margin-left: 13px; */
-    background-color: white;
+    background-color: #242631;
     overflow: auto;
 }
 
@@ -170,7 +202,7 @@ label:hover, #export_btn:hover, button:hover {
     height: 90%;
 }
 
-#imgnav::-webkit-scrollbar {
+#imgnav::-webkit-scrollbar, .labelnav::-webkit-scrollbar {
     display: none;
   }
 
@@ -242,4 +274,3 @@ label:hover, #export_btn:hover, button:hover {
     border-radius: 8px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
-  

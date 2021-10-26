@@ -34,14 +34,25 @@
                 <input id="json_upload" type="file" style="display: none; ">
             </div>
         </div>
-        <!-- <div class="tools"> -->
-        <button id="tools" data-title="Box"><i class="far fa-square"></i></button>
-        <button id="zoomin" data-title="Zoom In"><i class="fas fa-search-plus"></i></button>
-        <button id="zoomout" data-title="Zoom Out"><i class="fas fa-search-minus"></i></button>
-        <button id="counterclockwise" data-title="Rotate Left"><i class="fas fa-undo"></i></button>
-        <button id="clockwise" data-title="Rotate Right"><i class="fas fa-redo"></i></button>
-        <button id="export_btn" onclick="exportjson()"><i class="fas fa-file-export"></i> Export</button>
-        <!-- </div> -->
+
+        <!-- Icons taken from https://www.flaticon.com and https://www.fontaweseom.com > -->
+        <button id="tools" data-title="Import Labels" onclick="importlabels()"><img src="icons/square.png"
+                id="icons"></i></button>
+        <button id="zoomin" data-title="Zoom In"><img src="icons/zoom-in.png" id="icons"></button>
+        <button id="zoomout" data-title="Zoom Out"><img src="icons/zoom-out.png" id="icons"></button>
+        <button id="counterclockwise" data-title="Rotate Left"><img src="icons/rotate_left.png" id="icons"></button>
+        <button id="clockwise" data-title="Rotate Right"><img src="icons/rotate_right.png" id="icons"></button>
+        <div class="dropdown">
+
+            <button id="export_btn" class="dropbtn"><i class="fas fa-file-export"></i> Export Labels</button>
+            <div class="dropdown-content">
+
+                <label onclick="exportjson()"><i class="fas fa-file-export"></i> JSON File</label>
+                <label onclick="exportcsv()"><i class="fas fa-file-export"></i> CSV File</label>
+
+            </div>
+        </div>
+
     </div>
 
 
@@ -51,17 +62,17 @@
     </div>
     <!-- Main window for labelling -->
     <div class="middlepane">
-        
+
         <div class="container-fluid">
-            
+
             <div class="img-container" style="position:relative;">
                 <img id="expimg">
-                <canvas id="canvas"  style="position: absolute; top:0;left:0;"></canvas>
-                
+                <canvas id="canvas" style="position: absolute; top:0;left:0; border: red 3px solid;"></canvas>
+
                 <!-- <div id="output"> </div> -->
-                <div id="input-box" > Tag: <input type="text" name="input-ele" id="input-ele"> </div>
+                <div id="input-box"> Tag: <input type="text" name="input-ele" id="input-ele"> </div>
             </div>
-            
+
             <button id="prevbtn" onclick="previmg()"><i class="fas fa-step-backward"></i></button>
             <button id="nextbtn" onclick="nextimg()"><i class="fas fa-step-forward"></i></button>
         </div>
@@ -69,7 +80,8 @@
     <!-- set of labels -->
     <div class="rightpane">
         <div class="labelnav">
-        <output id="label" />
+            <label id="heading">List of Labels</label>
+            <output id="label" />
 
         </div>
     </div>
