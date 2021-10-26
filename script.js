@@ -75,6 +75,9 @@ function displaylabels(img) {
     var labellist = document.getElementById("label");
     labellist.innerHTML = "";
     let tmplab = temp_res[img];
+    var div = document.createElement("div");
+    div.innerHTML = "<label onclick=\"draw_all_labels(\'" + img + "\')\"style=\"border:cornsilk 2px solid; font-weight:bold; text-align:center; width:100%\";>" + "Display All Labels" + "</label>";
+    labellist.insertBefore(div, null);
     for (var i = 0; i < tmplab.length; i++) {
 
         for (const [key, value] of Object.entries(tmplab[i])) {
@@ -99,7 +102,7 @@ function displayimportedlabels(img) {
     labellist.innerHTML = "";
     let tmplab = impjson[img];
     var div = document.createElement("div");
-    div.innerHTML = "<label onclick=\"importlabels( )\"style=\"border:cornsilk 2px solid; font-weight:bold\";>" + "Display All Labels" + "</label>";
+    div.innerHTML = "<label onclick=\"importlabels( )\"style=\"border:cornsilk 2px solid; text-align:center; width:100%; font-weight:bold\";>" + "Display All Labels" + "</label>";
     labellist.insertBefore(div, null);
     for (var i = 0; i < tmplab.length; i++) {
         for (const [key, value] of Object.entries(tmplab[i])) {
@@ -140,6 +143,18 @@ function importlabels() {
                     displayimportedlabels(img.title);
                 }
             }
+        }
+    }
+
+}
+
+function draw_all_labels(img_title) {
+    for (var i = 0; i < temp_res[img_title].length; i++) {
+        for (const [k, v] of Object.entries(temp_res[img_title][i])) {
+            // drawimplabels(v[0], v[1], v[2], v[3]);
+            ctx.strokeRect(v[0], v[1], v[2] - v[0], v[3] - v[1]);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
         }
     }
 
@@ -365,15 +380,20 @@ $(document).ready(function () {
         image_width = pic.clientWidth;
         image_height = pic.clientHeight;
 
-
-        canvas.width = image_width;
-        canvas.height = image_height;
+        if (angle % 180 != 0) {
+            canvas.width = image_height;
+            canvas.height = image_width;
+        }
+        else {
+            canvas.width = image_width;
+            canvas.height = image_height;
+        }
         ctx = canvas.getContext('2d');
 
 
     }
 
-    
+
     /**
      * Resize the canvas when the image is rotated using the current image's dimensions
      * 
@@ -425,10 +445,10 @@ $(document).ready(function () {
             var x2 = mousex;
             var y2 = mousey;
 
-            var currWidth=pic.clientWidth;
-            var ratio = (img_src[pic.title][1] /currWidth );
-            
-            temp_data[input_value]=[x1,y1,x2,y2];
+            var currWidth = pic.clientWidth;
+            var ratio = (img_src[pic.title][1] / currWidth);
+
+            temp_data[input_value] = [x1, y1, x2, y2];
             temp_res[pic.title].push(JSON.parse(JSON.stringify(temp_data)));
 
             // if box is drawn over a rotated image, calculate the coordinates of box of original orientation and add it to the results
@@ -455,14 +475,13 @@ $(document).ready(function () {
                     var newx2 = pic.width - y2
                     var newy2 = x2;
                 }
-                x1=newx1;
-                y1=newy1;
-                x2=newx2;
-                y2=newy2;
+                x1 = newx1;
+                y1 = newy1;
+                x2 = newx2;
+                y2 = newy2;
 
             }
-            if(img_src[pic.title][1]!=currWidth)
-            {
+            if (img_src[pic.title][1] != currWidth) {
                 var newboxes = resizeboxes(x1, y1, x2, y2, ratio);
 
                 var newzx1 = newboxes[0];
@@ -471,11 +490,10 @@ $(document).ready(function () {
                 var newzy2 = newboxes[3];
 
                 temp_data[input_value] = [newzx1, newzy1, newzx2, newzy2];
-                
+
             }
 
-            else
-            {
+            else {
                 temp_data[input_value] = [x1, y1, x2, y2];
             }
 
@@ -538,8 +556,8 @@ $(document).ready(function () {
         $('#expimg').css('transform', 'rotate(' + angle + 'deg)');
 
         // calculating top_offset and left_offset to maintain image position with respect to the canvas when rotated
-        var topoffset = (pic.width / 2 - pic.height / 2) * ((angle % 180) / 90);
-        var leftoffset = (pic.width - pic.height) / 2 * ((angle % 180) / 90);;
+        var topoffset = (pic.width / 2 - pic.height / 2) * ((Math.abs(angle) % 180) / 90);
+        var leftoffset = (pic.width - pic.height) / 2 * ((Math.abs(angle) % 180) / 90);;
         $("#expimg").css({
             'top': topoffset,
             'position': 'relative',
@@ -571,28 +589,28 @@ $(document).ready(function () {
 
 
                 //change the coordinates of the box w.r.t the angle rotated
-                if (angle % 360 == 90) {
+                if (angle % 360 == 90 || angle % 360 == -270) {
                     var newx1 = pic.height - y1;
                     var newy1 = x1;
 
                     var newx2 = pic.height - y2;
                     var newy2 = x2;
                 }
-                else if (angle % 360 == 180) {
+                else if (angle % 360 == 180 || angle % 360 == -180) {
                     var newx1 = pic.width - x1;
                     var newy1 = pic.height - y1;
 
                     var newx2 = pic.width - x2;
                     var newy2 = pic.height - y2;
                 }
-                else if (angle % 360 == 270) {
+                else if (angle % 360 == 270 || angle % 360 == -90) {
                     var newx1 = y1;
                     var newy1 = pic.width - x1;
 
                     var newx2 = y2
                     var newy2 = pic.width - x2;
                 }
-                else if (angle % 360 == 0) {
+                else if (Math.abs(angle) % 360 == 0) {
                     var newx1 = x1;
                     var newy1 = y1;
 
@@ -608,7 +626,7 @@ $(document).ready(function () {
         }
         displaylabels(pic.title);
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-        // drawlabelrect(newx1,newy1,newx2,newy2);
+        draw_all_labels(pic.title);
 
 
     });
@@ -628,7 +646,6 @@ $(document).ready(function () {
         });
 
 
-
         //resize the canvas wrt to angle
         canvasresize_rotate(angle);
 
@@ -651,28 +668,29 @@ $(document).ready(function () {
                 y2 = newboxes[3];
 
                 //change the coordinates of the box w.r.t the angle rotated
-                if (angle % 360 == 90) {
+                if (angle % 360 == 90 || angle % 360 == -270) {
                     var newx1 = pic.height - y1;
                     var newy1 = x1;
 
                     var newx2 = pic.height - y2;
                     var newy2 = x2;
                 }
-                else if (angle % 360 == 180) {
+                else if (angle % 360 == 180 || angle % 360 == -180) {
                     var newx1 = pic.width - x1;
                     var newy1 = pic.height - y1;
 
                     var newx2 = pic.width - x2;
                     var newy2 = pic.height - y2;
                 }
-                else if (angle % 360 == 270) {
+                else if (angle % 360 == 270 || angle % 360 == -90) {
+
                     var newx1 = y1;
                     var newy1 = pic.width - x1;
 
                     var newx2 = y2
                     var newy2 = pic.width - x2;
                 }
-                else if (angle % 360 == 0) {
+                else if (Math.abs(angle) % 360 == 0) {
                     var newx1 = x1;
                     var newy1 = y1;
 
@@ -682,12 +700,15 @@ $(document).ready(function () {
 
                 //store the new coordinates in temporary results
                 temp_res[pic.title][i][key] = [Math.abs(newx1), Math.abs(newy1), Math.abs(newx2), Math.abs(newy2)];
+                console.log(results[pic.title][i][key]);
+                console.log(temp_res[pic.title][i][key]);
 
             }
         }
         displaylabels(pic.title);
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-        // drawlabelrect(newx1,newy1,newx2,newy2);
+        draw_all_labels(pic.title);
+
     });
 
 
@@ -720,17 +741,22 @@ $(document).ready(function () {
 
 
     $("#zoomin").click(function () {
-        // $("#expimg").css({
-        //     'top': 0,
-        //     'position': 'relative',
-        //     'left': 0
-        // });
+
         var prev = pic.clientWidth;
         var currWidth = pic.clientWidth;
         pic.style.width = (currWidth + 100) + "px";
         var next = pic.clientWidth;
         var ratio = (next / prev);
-
+        if (Math.abs(angle) % 180 != 0) {
+            // calculating top_offset and left_offset to maintain image position with respect to the canvas when rotated
+            var topoffset = (pic.clientWidth / 2 - pic.clientHeight / 2) * ((Math.abs(angle) % 180) / 90);
+            var leftoffset = (pic.clientWidth - pic.clientHeight) / 2 * ((Math.abs(angle) % 180) / 90);
+            $("#expimg").css({
+                'top': topoffset,
+                'position': 'relative',
+                'left': -leftoffset
+            });
+        }
         //resize canvas w.r.t the zoomed image
         canvasresize_zoom();
 
@@ -755,28 +781,35 @@ $(document).ready(function () {
                 temp_res[pic.title][i][key] = [newx1, newy1, newx2, newy2];
                 console.log(temp_res[pic.title][i][key]);
                 console.log(results[pic.title][i][key]);
-           
+
             }
         }
         displaylabels(pic.title);
- 
+
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-        drawlabelrect(newx1,newy1,newx2,newy2);
+        draw_all_labels(pic.title);
 
     });
 
 
     $("#zoomout").click(function () {
-        // $("#expimg").css({
-        //     'top': 0,
-        //     'position': 'relative',
-        //     'left': 0
-        // });
+
         var prev = pic.clientWidth;
         var currWidth = pic.clientWidth;
         pic.style.width = (currWidth - 100) + "px";
         var next = pic.clientWidth;
         var ratio = (next / prev);
+
+        if (Math.abs(angle) % 180 != 0) {
+            // calculating top_offset and left_offset to maintain image position with respect to the canvas when rotated
+            var topoffset = (pic.clientWidth / 2 - pic.clientHeight / 2) * ((Math.abs(angle) % 180) / 90);
+            var leftoffset = (pic.clientWidth - pic.clientHeight) / 2 * ((Math.abs(angle) % 180) / 90);
+            $("#expimg").css({
+                'top': topoffset,
+                'position': 'relative',
+                'left': -leftoffset
+            });
+        }
 
         //resize canvas w.r.t the zoomed image
         canvasresize_zoom();
@@ -804,10 +837,10 @@ $(document).ready(function () {
 
             }
         }
-        
+
         displaylabels(pic.title);
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-        drawlabelrect(newx1,newy1,newx2,newy2);
+        draw_all_labels(pic.title);
 
     });
 
