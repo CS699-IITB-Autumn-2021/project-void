@@ -19,7 +19,7 @@ function expandImg(img) {
     temp_res[img.title] = JSON.parse(JSON.stringify(results[img.title]));
     angle = 0;
     displayLabels(img.title);
-   
+    drawAllLabels(img.title);
 
     // console.log(results[img.title]);
     // console.log(temp_res[img.title]);
@@ -64,9 +64,7 @@ function deleteLabel(delarg) {
     results[arg[0]].splice(tmp, 1);
     temp_res[arg[0]].splice(tmp, 1);
     displayLabels(arg[0]);
-
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-    
 }
 
 
@@ -154,8 +152,12 @@ function importLabels() {
     }
 }
 
+/**
+ * To draw all the bounding boxes of an image on the canvas.
+ *
+ * @param {string}  - image title
+ */
 function drawAllLabels(img_title) {
-
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
     for (var i = 0; i < temp_res[img_title].length; i++) {
         for (const [k, v] of Object.entries(temp_res[img_title][i])) {
@@ -167,7 +169,6 @@ function drawAllLabels(img_title) {
     }
 
 }
-
 
 
 /**
@@ -189,9 +190,9 @@ function nextImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
-  
 
 }
+
 /**
  * To slide to previous image on the main window when a next button is clicked. These buttons follow a circular loop on thumbnail images
  *
@@ -213,13 +214,12 @@ function prevImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
-  
 
 }
 
 /**
- * To download the output json file with image labels
- * referred from https://stackoverflow.com/questions/33780271/export-a-json-object-to-a-text-file
+ * To download the output json file with image labels.<br>
+ * Referred from https://stackoverflow.com/questions/33780271/export-a-json-object-to-a-text-file
  *
  */
 function exportJson() {
@@ -235,8 +235,8 @@ function exportJson() {
 }
 
 /**
- * To download the output csv file with image labels
- * referred from https://stackoverflow.com/questions/7431268/how-to-read-data-from-csv-file-using-javascript
+ * To download the output csv file with image labels.<br>
+ * 
  */
 function exportCsv() {
     const filename = 'data.csv';
@@ -261,17 +261,44 @@ function exportCsv() {
 
 
 //global variables
-/* img_src stores the details of the images uploaded. image title is the key and details are in the value.
- Ex: {'img1 title':['img src','img width','img height'],'img2 title':['img src','img width','img height']}*/
+/**
+ * To store the details of the images uploaded. image title is the key and details are in the value.
+ * @example {'img1 title':['img src','img width','img height'],'img2 title':['img src','img width','img height']}
+ * 
+ * @type {Dictionary}
+ */
 var img_src = {};
+/**
+ * List of files in order of the thumnbails in the left side bar 
+ * @type {Array}
+ */
 var filelist = [];  // filelist array stores the image titles in the order of the thumbnails
+/**
+ * To store the labels and co-ordinates 
+ * @type {Dictionary}
+ * 
+ */
 var results = {};   // stores the images and its labels
-let impjson = {};   // stores the contents of imported annotation file
+/**
+ * To store the temporary labels and its boxes (used in zooming and rotating)
+ * @type {Dictionary}
+ * 
+ */
+var temp_res = {};  // stores the temporary labels and its boxes (used in zooming and rotating)
+/**
+ * To store the contents of imported annotation file
+ * @type {Dictionary}
+ * 
+ */
+let impjson = {};
+/**
+ * To store the angle of the rotated image
+ * @type {int}
+ * 
+ */
+var angle = 0;
 var canvas;
 var ctx;
-var angle = 0;      // denotes the angle of the rotated image
-var temp_res = {};  // stores the temporary labels and its boxes (used in zooming and rotating)
-
 
 $(document).ready(function () {
 
@@ -288,10 +315,17 @@ $(document).ready(function () {
     let mousedown = false;
     var pic;
 
+
+    // to make sure filereader support is available in the browser
     if (window.File && window.FileList && window.FileReader) {
 
-        /*uploading images using filereader api*/
-        // referred from https://stackoverflow.com/questions/23402187/multiple-files-upload-and-using-file-reader-to-preview
+
+        /**
+         * Uploading images using filereader api <br>
+         * Referred from https://stackoverflow.com/questions/23402187/multiple-files-upload-and-using-file-reader-to-preview
+         * 
+         * @function file_upload
+         */
         $("#folder_upload,#file_upload").on("change", function (e) {
             var output = document.getElementById("imgnav");
             var files = e.target.files;
@@ -325,9 +359,13 @@ $(document).ready(function () {
             canvasResize();
         });
 
-        /*uploading annotation file using filereader api*/
+        /**
+         * Uploading annotation file using filereader api <br>
+         * Referred https://stackoverflow.com/questions/8847766/how-to-convert-json-to-csv-format-and-store-in-a-variable
+         * 
+         * @function json_upload
+         */
         $("#json_upload").on("change", function (e) {
-
             var reader = new FileReader();
             var filetype = e.target.files[0].name;
             reader.onload = function (e) {
@@ -362,11 +400,13 @@ $(document).ready(function () {
             }
             reader.readAsText(e.target.files[0]);
         });
+
+
     }
 
     /**
      * Resize the canvas when the image is loaded in the main window using the current image's dimensions
-     * 
+     * @function canvasResize
      */
     function canvasResize() {
         $('#expimg').on('load', function () {
@@ -378,7 +418,7 @@ $(document).ready(function () {
             canvas.width = image_width;
             canvas.height = image_height;
             ctx = canvas.getContext('2d');
-            drawAllLabels(pic.title)
+            drawAllLabels(pic.title);
         })
 
 
@@ -386,8 +426,8 @@ $(document).ready(function () {
 
 
     /**
-     * Resize the canvas when the image is zoomed using the current image's dimensions
-     * 
+     * Resize the canvas when the image is zoomed using the current image's dimensions and zoom factor
+     * @function canvasResizeZoom
      */
     function canvasResizeZoom() {
         pic = document.getElementById('expimg');
@@ -410,10 +450,10 @@ $(document).ready(function () {
 
 
     /**
-     * Resize the canvas when the image is rotated using the current image's dimensions
-     * 
+     * Resize the canvas when the image is rotated using the current image's dimensions and rotated angle
+     * @function canvasResizeRotate
      */
-    function canvasResizeRotate(angle) {
+    function canvasResizeRotate() {
         pic = document.getElementById('expimg');
 
         image_width = pic.clientWidth;
@@ -429,22 +469,17 @@ $(document).ready(function () {
         }
 
         ctx = canvas.getContext('2d');
+        
 
     }
 
 
-    //Mousedown
-    canvas.addEventListener('mousedown', function (e) {
-
-        input_box.style.display = 'none'
-        input_ele.value = ""
-
-        let rect = canvas.getBoundingClientRect()
-        last_mousex = parseInt(e.clientX - rect.left);
-        last_mousey = parseInt(e.clientY - rect.top);
-        mousedown = true;
-    });
-
+    /**
+     * To input the label when the bounding box is drawn and save the label and box coordinates.
+     * @function inputLabel
+     * 
+     * @param {event} - type of the event
+     */
     function inputLabel(event) {
         if (event.keyCode === 13) {
             event.preventDefault();
@@ -520,8 +555,25 @@ $(document).ready(function () {
         }
     }
 
+    //Mousedown
+    canvas.addEventListener('mousedown', function (e) {
+        /**
+        * @event mousedown
+        */
+        input_box.style.display = 'none'
+        input_ele.value = ""
+
+        let rect = canvas.getBoundingClientRect()
+        last_mousex = parseInt(e.clientX - rect.left);
+        last_mousey = parseInt(e.clientY - rect.top);
+        mousedown = true;
+    });
+
     //Mouseup
     canvas.addEventListener('mouseup', function (e) {
+        /**
+        * @event mouseup
+        */
         mousedown = false;
 
         if (width != 0 && height != 0) {
@@ -546,6 +598,9 @@ $(document).ready(function () {
 
     //Mousemove
     canvas.addEventListener('mousemove', function (e) {
+        /**
+        * @event mousemove
+        */
         let rect = canvas.getBoundingClientRect()
         mousex = parseInt(e.clientX - rect.left);
         mousey = parseInt(e.clientY - rect.top);
@@ -557,7 +612,6 @@ $(document).ready(function () {
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
             // ctx.clearRect(prev_x-1, prev_y-1, prev_w+2, prev_h+2);
 
-          
             drawAllLabels(pic.title);
 
             ctx.beginPath();
@@ -584,7 +638,13 @@ $(document).ready(function () {
     });
 
 
-
+    /**
+    * To rotate the image and respective bouding boxes clockwise.<br>
+    * Updates the css transform property of image based on angle for clockwise rotation.<br>
+    * Updates all the bounding boxes coordinates based on clockwise rotation through given angle.<br>
+    * Referred: https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle <br>
+    * @function clockwise
+    */
     $('#clockwise').on('click', function () {
         angle += 90;
         $('#expimg').css('transform', 'rotate(' + angle + 'deg)');
@@ -599,7 +659,7 @@ $(document).ready(function () {
         });
 
         //resize the canvas wrt to angle
-        canvasResizeRotate(angle);
+        canvasResizeRotate();
 
         //rotate all the bouding boxes wrt to the angle rotated
         for (var i = 0; i < results[pic.title].length; i++) {
@@ -665,7 +725,13 @@ $(document).ready(function () {
 
     });
 
-
+    /**
+    * To rotate the image and respective bouding boxes counterclockwise. <br>
+    * Updates the css transform property of image based on angle for counterclockwise rotation .<br>
+    * Updates all the bounding boxes coordinates based on counterclockwise rotation through given angle.<br>
+    * Referred: https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle <br>
+    * @function counterclockwise
+    */
     $('#counterclockwise').on('click', function () {
         angle -= 90;
         $('#expimg').css('transform', 'rotate(' + angle + 'deg)');
@@ -681,7 +747,7 @@ $(document).ready(function () {
 
 
         //resize the canvas wrt to angle
-        canvasResizeRotate(angle);
+        canvasResizeRotate();
 
         //rotate all the bouding boxes wrt to the angle rotated
         for (var i = 0; i < results[pic.title].length; i++) {
@@ -748,11 +814,14 @@ $(document).ready(function () {
 
     /**
     * Resizes the bounding boxes when the image is zoomed in or zoomed out.
-    * @param{int} x1 - x1 coordinate of the bouding box
-    * @param{int} y1 - y1 coordinate of the bouding box
-    * @param{int} x2 - x2 coordinate of the bouding box
-    * @param{int} y2 - t2 coordinate of the bouding box
-    * @param{int} ratio - ratio of the zoomed image width to the previous image width
+    * 
+    * @function resizeBoxes
+    * 
+    * @param {int} x1 - x1 coordinate of the bouding box
+    * @param {int} y1 - y1 coordinate of the bouding box
+    * @param {int} x2 - x2 coordinate of the bouding box
+    * @param {int} y2 - t2 coordinate of the bouding box
+    * @param {int} ratio - ratio of the zoomed image width to the previous image width
     * 
     * @return{Array<int>} Array of resized coordinates of the bouding box.
     */
@@ -773,7 +842,13 @@ $(document).ready(function () {
         return [newx1, newy1, newx2, newy2];
     }
 
-
+    /**
+     * To zoom in  the image and respective bouding boxes. 
+     * Increases image width by 100px for zoom in of image.
+     * Updates all the bounding boxes coordinates based on how much image is zoomed in.
+     * Referred : https://www.daniweb.com/programming/software-development/threads/296495/how-to-resize-the-drawn-rectangle-when-zoom-the-image#post1275345 <br>
+     * @function zoomIn
+     */
     $("#zoomin").click(function () {
 
         var prev = pic.clientWidth;
@@ -824,7 +899,13 @@ $(document).ready(function () {
 
     });
 
-
+    /**
+     * To zoom out the image and respective bouding boxes.<br> 
+     * Decreases image width by 100px for zoom in of image.<br>
+     * Updates all the bounding boxes coordinates based on how much image is zoomed out.<br>
+     * Referred : https://www.daniweb.com/programming/software-development/threads/296495/how-to-resize-the-drawn-rectangle-when-zoom-the-image#post1275345 <br>
+     * @function zoomOut
+     */
     $("#zoomout").click(function () {
 
         if (pic.clientWidth > 150) {    // to prevent image width going below zero
@@ -848,7 +929,6 @@ $(document).ready(function () {
             //resize canvas w.r.t the zoomed image
             canvasResizeZoom();
 
-         
 
             for (var i = 0; i < temp_res[pic.title].length; i++) {
                 for (const [key, value] of Object.entries(temp_res[pic.title][i])) {
