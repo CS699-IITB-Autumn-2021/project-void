@@ -300,6 +300,12 @@ var angle = 0;
 var canvas;
 var ctx;
 
+
+/**
+ * get reference to the image and draw a canvas over it
+ * 
+ * 
+ */
 $(document).ready(function () {
 
     canvas = document.getElementById('canvas');
@@ -356,7 +362,7 @@ $(document).ready(function () {
 
             }
 
-            canvasResize();
+            canvasResize(); //rezise the canvas to fit to the image
         });
 
         /**
@@ -476,6 +482,7 @@ $(document).ready(function () {
 
     /**
      * To input the label when the bounding box is drawn and save the label and box coordinates.
+     * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
      * @function inputLabel
      * 
      * @param {event} - type of the event
@@ -555,7 +562,16 @@ $(document).ready(function () {
         }
     }
 
-    //Mousedown
+    
+    
+    /**
+     * record the position of cursor when mouse is clicked
+     * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
+     * @function addEventListener
+     * 
+     * @param {mouse_event_type} mousedown
+     * @param {eventhandler_function}
+     */
     canvas.addEventListener('mousedown', function (e) {
         /**
         * @event mousedown
@@ -569,14 +585,23 @@ $(document).ready(function () {
         mousedown = true;
     });
 
-    //Mouseup
+    /**
+     * record the position of cursor when mouse button is released and draw the bounding as well as open the input box for recording the label 
+     * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
+     * @function addEventListener
+     * 
+     * @param {mouse_event_type} mouseup
+     * @param {eventhandler_function}
+     */
     canvas.addEventListener('mouseup', function (e) {
         /**
         * @event mouseup
         */
         mousedown = false;
 
-        if (width != 0 && height != 0) {
+
+        if (width != 0 && height != 0) // check if the mouse position has changed, only then make the inputlabel appear
+        {
 
             width = 0;
             height = 0;
@@ -589,14 +614,21 @@ $(document).ready(function () {
             input_box.style.display = 'block'
             $("#input-ele").focus();
 
-            input_box.addEventListener("keyup", inputLabel)
+            input_box.addEventListener("keyup", inputLabel) // listen for click in the input field.
         }
 
     });
 
 
 
-    //Mousemove
+    /**
+     * record the position of cursor when mouse is moved and keep redrawing the previously rendered boxes along with the current box 
+     * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
+     * @function addEventListener
+     * 
+     * @param {mouse_event_type} mousemove
+     * @param {eventhandler_function}
+     */
     canvas.addEventListener('mousemove', function (e) {
         /**
         * @event mousemove
@@ -605,15 +637,12 @@ $(document).ready(function () {
         mousex = parseInt(e.clientX - rect.left);
         mousey = parseInt(e.clientY - rect.top);
         if (mousedown) {
-            // prev_x = last_mousex;
-            // prev_y = last_mousey;
-            // prev_w = width;
-            // prev_h = height;
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
-            // ctx.clearRect(prev_x-1, prev_y-1, prev_w+2, prev_h+2);
-
+           
+            //redraw the recorded bounding boxes
             drawAllLabels(pic.title);
 
+            //draw the current box
             ctx.beginPath();
             width = mousex - last_mousex;
             height = mousey - last_mousey;
@@ -629,6 +658,13 @@ $(document).ready(function () {
 
     });
 
+     /**
+     * When ESC key pressed, make the input box disappear
+     * @function addEventListener
+     * 
+     * @param {key_event_type} keyup
+     * @param {eventhandler_function}
+     */
     $(document).keyup(function (e) {
         if (e.keyCode == 27) {
             // ctx.clearRect(0,0,canvas.width,canvas.height); 
