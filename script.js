@@ -83,6 +83,25 @@ var canvas;
 var ctx;
 var rotationAngle=0;
 var original=100;
+
+
+class Rectangle { 
+    constructor(ctx, x, y, w, h) {
+      this.ctx = ctx;
+      this.x = x;
+      this.y = y;
+      this.w = w;
+      this.h = h;
+   }
+    draw() {
+      // draw using ctx here
+      this.ctx.rect(this.x,this.y,this.w,this.h);
+        this.ctx.strokeStyle = 'black';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+   }
+} 
+
 $(document).ready(function () {
 
     //global variables
@@ -95,10 +114,11 @@ $(document).ready(function () {
     // let canvasx = canvas.offsetLeft;
     // let canvasy = canvas.offsetTop;
     let last_mousex = last_mousey = width = height = 0;
-    let prev_x = prev_y = prev_w = prev_h = 0;
+    // let prev_x = prev_y = prev_w = prev_h = 0;
     let mousex = mousey = 0;
     let mousedown = false;
     var pic;
+    let shapes=[]
     //  results= {'img':"",'bounding_boxes':[]};
 
 
@@ -190,7 +210,15 @@ $(document).ready(function () {
     canvas.addEventListener('mouseup', function(e) {
         mousedown = false;
 
+       
+
         if(width !=0 && height != 0){
+
+            var rectangle = new Rectangle(ctx, last_mousex, last_mousey, width, height);
+            // save rectangle to an array
+            shapes.push(rectangle);
+            // redraw canvas
+            redraw();
 
             width=0;
             height=0;
@@ -207,6 +235,16 @@ $(document).ready(function () {
 
     });
 
+    function redraw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        console.log(shapes);
+        // draw all rectangle
+        shapes.forEach(function(shape) {
+        // draw shape
+        shape.draw();
+    })
+    }
+
 
     
     //Mousemove
@@ -217,10 +255,10 @@ $(document).ready(function () {
         if(mousedown) {
             prev_x = last_mousex;
             prev_y = last_mousey;
-            prev_w = width;
-            prev_h = height;
-            //ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
-            ctx.clearRect(prev_x-1, prev_y-1, prev_w+2, prev_h+2);
+            // prev_w = width;
+            // prev_h = height;
+            ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+            // ctx.clearRect(prev_x-1, prev_y-1, prev_w+2, prev_h+2);
           
             ctx.beginPath();
             width = mousex-last_mousex;
@@ -229,6 +267,7 @@ $(document).ready(function () {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
             ctx.stroke();
+            redraw();
         }
         //Output
         // document.getElementById('output').innerHTML='current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown;
