@@ -6,13 +6,14 @@ html {
     background-color: #0b0c10;
 }
 
+/*--------Main structure of the site ******/
+/**Referred https://stackoverflow.com/questions/36662712/how-do-i-divide-a-page-in-three-vertical-sections/36662828**/
 
 .leftpane {
     width: 11%;
     height: 88%;
     float: left;
     border-collapse: collapse;
-    /* background-color:#66fcf1; */
     background-color:#242631;
 }
 
@@ -27,21 +28,9 @@ html {
 .rightpane {
     width: 18%;
     height: 88%;
-    /* position: relative; */
     float: left;
     border-collapse: collapse;
     background-color: #242631;
-}
-
-#icons {
-    width:100%;
-    height:100%;
-}
-
-.toolbox {
-    padding: 5px;
-    height: 6%;
-    background-color: #0b0c10;
 }
 
 .topnav {
@@ -52,9 +41,22 @@ html {
     text-align: center;
     color: #099EA7;
     font-size: 25px;
-/*     font-style: oblique; */
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-weight: 900px;
+}
+/***************/
+
+
+/******** styles for the toolbar buttons and labels********/
+#icons {
+    width:100%;
+    height:100%;
+}
+
+.toolbox {
+    padding: 5px;
+    height: 6%;
+    background-color: #0b0c10;
 }
 
  label {
@@ -97,22 +99,6 @@ button
 
 }
 
-[data-title]:hover::after
-{
-    content: attr(data-title);
-    color: #099EA7;
-    width: 100%;
-    /* font-size: 100%; */
-    position: absolute;
-    padding: 2px 5px 2px 5px;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    top: -1.5em;
-    left: -0.5em; 
-    /* left: 100%; */
-    white-space: nowrap;
-}
-
 #tools:hover, #zoomin:hover, #zoomout:hover, #clockwise:hover, #counterclockwise:hover{
     color: black;
     background-color:#099EA7;
@@ -135,22 +121,34 @@ label:hover, #export_btn:hover, button:hover {
 #export_btn
 {
     color: #099EA7;
-    /* float: right; */
-    /* display: flex; */
-    /* justify-content: flex-end; */
-    /* margin-left: auto; */
-    /* position: absolute; */
-    /* right: 0; */
     text-align: left;
     width: 100%;
-    /* margin-right: 8px; */
     font-weight: bold;
 }
+/****************/
 
+/**To display the tool button's functionality when hovered**/
+/**referred https://stackoverflow.com/questions/2011142/how-to-change-the-style-of-the-title-attribute-inside-an-anchor-tag **/
+[data-title]:hover::after
+{
+    content: attr(data-title);
+    color: #099EA7;
+    width: 100%;
+    /* font-size: 100%; */
+    position: absolute;
+    padding: 2px 5px 2px 5px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    top: -1.5em;
+    left: -0.5em; 
+    /* left: 100%; */
+    white-space: nowrap;
+}
+/***************/
+
+/*** styles for the left and right side bars *********/
 #imgnav {
-    /* width: 11%; */
     height: 100%;
-    /* position: fixed; */
     max-height: calc(100vh - 10xrem);
     overflow-y: scroll;
     z-index: 1;
@@ -171,11 +169,20 @@ label:hover, #export_btn:hover, button:hover {
 
 }
 
+/* referred https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp**/
+#imgnav::-webkit-scrollbar, .labelnav::-webkit-scrollbar {
+    display: none;
+  }
+
 #dellabel
 {
     margin-left: 10px;
 }
 
+/***********/
+
+
+/**** css for thumbnail images on the left side bar ******/
 #tbimg {
     /* padding: 5px; */
     border: cornsilk 3px solid;
@@ -190,8 +197,9 @@ label:hover, #export_btn:hover, button:hover {
 #tbimg:hover {
     opacity: 1;
 }
+/*********/
 
-
+/***Main Containter that labels the images****/
 .img-container
 {
     width: 100%;
@@ -206,15 +214,9 @@ label:hover, #export_btn:hover, button:hover {
     width: 100%;
     height: 90%;
 }
+/*********/
 
-#imgnav::-webkit-scrollbar, .labelnav::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* .img-container::-webkit-scrollbar {
-    display: none;
-  } */
-
+/*** Previous and Next Image Buttons ******/
 #prevbtn {
     margin-top: 5%;
     width: 10%;
@@ -237,20 +239,25 @@ label:hover, #export_btn:hover, button:hover {
     color: black;
     background-color: #099EA7;
 }
+/*********/
+
+
+/**css for dropdown menu, referred https://www.w3schools.com/howto/howto_css_dropdown.asp **/
+
 .dropbtn {
     width: 100%;
     font-weight: bold;
     color: #099EA7;
   }
   
-  .dropdown {
+.dropdown {
     position: relative;
     display: inline-block;
     margin-right: 1%;
 
   }
   
-  .dropdown-content {
+.dropdown-content {
     display: none;
     position: absolute;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -262,13 +269,15 @@ label:hover, #export_btn:hover, button:hover {
     width: 100%;
 
 }
-  
-  
+   
 .dropdown:hover .dropdown-content {
     display: block;
     background-color: #242631;
 }
 
+/***************/
+
+/*** css for input box which appears when a bouding box is drawn********/
 #input-box{
     display: none;
     position:absolute;
@@ -279,4 +288,4 @@ label:hover, #export_btn:hover, button:hover {
     border-radius: 8px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
-  
+/***********/  
