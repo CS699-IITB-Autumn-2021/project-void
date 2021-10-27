@@ -231,7 +231,7 @@ $(document).ready(function () {
             // console.log("y:"+ e.clientY +"x:" + e.clientX)
             input_box.style.display='block'
     
-            input_box.addEventListener("keyup", inputLabel(rectangle))
+            input_box.addEventListener("keyup", inputLabel)
         }
 
     });
@@ -282,10 +282,12 @@ $(document).ready(function () {
             
             input_ele.value="";
             input_box.style.display='none'
-            
-
-
+            shapes.pop();
+            ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+            redraw();
+            ctx.stroke();
         };
+        
       });
 
 
