@@ -21,13 +21,16 @@
         Image Annotator
     </div>
 
-    <!--tool box contains the all the import/export options and zoom,rotate buttons-->
+    <!--tool box div contains the all the import/export options and zoom,rotate buttons-->
     <div class="toolbox">
+
+        <!-- dropdown for the uploading files menu -->
         <div class="dropdown">
             <button class="dropbtn"><i class="fas fa-upload"></i> Upload files/folder</button>
             <div class="dropdown-content">
                 <label for="file_upload"><i class="far fa-file"></i> Image Files</label>
                 <input id="file_upload" type="file" accept="image/*" name="files[]" multiple style="display: none; ">
+                <!--Referred Folder upload from  https://stackoverflow.com/questions/12942436/how-to-get-folder-directory-from-html-input-type-file-or-any-other-way -->
                 <label for="folder_upload"><i class="far fa-folder"></i> Image Folder</label>
                 <input id="folder_upload" type="file" webkitdirectory mozdirectory style="display: none;">
                 <label for="json_upload" title="Upload in csv or json format"><i class="fas fa-file-import"></i> Import
@@ -36,13 +39,15 @@
             </div>
         </div>
 
+        <!-- buttons for zoom and rotate options -->
         <!-- Icons taken from https://www.flaticon.com and https://www.fontaweseom.com > -->
-        <button id="tools" data-title="Import Labels" onclick="importLabels()"><img src="icons/square.png"
-                id="icons"></i></button>
+        <button id="tools" data-title="Import Labels" onclick="importLabels()"><img src="icons/square.png" id="icons"></i></button>
         <button id="zoomin" data-title="Zoom In"><img src="icons/zoom-in.png" id="icons"></button>
         <button id="zoomout" data-title="Zoom Out"><img src="icons/zoom-out.png" id="icons"></button>
         <button id="counterclockwise" data-title="Rotate Left"><img src="icons/rotate_left.png" id="icons"></button>
         <button id="clockwise" data-title="Rotate Right"><img src="icons/rotate_right.png" id="icons"></button>
+
+        <!-- dropdown for exporting labels menu -->
         <div class="dropdown">
 
             <button id="export_btn" class="dropbtn"><i class="fas fa-file-export"></i> Export Labels</button>
@@ -56,12 +61,12 @@
 
     </div>
 
-
-    <!-- left side bar for images preview -->
+    <!-- left side bar for the uploaded image thumnails -->
     <div class="leftpane">
         <output id="imgnav" />
     </div>
-    <!-- Main window for labelling -->
+
+    <!-- Main container for labelling the images-->
     <div class="middlepane">
 
         <div class="container-fluid">
@@ -74,17 +79,19 @@
                 <div id="input-box"> Tag: <input type="text" name="input-ele" id="input-ele"> </div>
             </div>
 
-            <button id="prevbtn" title="previous image" onclick="prevImg()"><i
-                    class="fas fa-step-backward"></i></button>
+            <!-- Previous and Next Image buttons -->
+            <button id="prevbtn" title="previous image" onclick="prevImg()"><i class="fas fa-step-backward"></i></button>
             <button id="nextbtn" title="next image" onclick="nextImg()"><i class="fas fa-step-forward"></i></button>
+            
         </div>
     </div>
-    <!-- set of labels shown on right side bar -->
+
+
+    <!-- List of labels to be shown on right side bar -->
     <div class="rightpane">
         <div class="labelnav">
             <label id="heading">List of Labels</label>
             <output id="label" />
-
         </div>
     </div>
 
