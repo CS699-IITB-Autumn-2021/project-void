@@ -4,7 +4,7 @@
  *
  * @param {string} img - contains image details
  */
- function expandImg(img) {
+function expandImg(img) {
     var expandimg = document.getElementById("expimg")
     expandimg.src = img.src;
     expandimg.title = img.title;
@@ -19,7 +19,6 @@
     temp_res[img.title] = JSON.parse(JSON.stringify(results[img.title]));
     angle = 0;
     displayLabels(img.title);
-    shapes=new Array();
 
     // console.log(results[img.title]);
     // console.log(temp_res[img.title]);
@@ -186,7 +185,6 @@ function nextImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
-    shapes=new Array();
 
 }
 /**
@@ -210,7 +208,6 @@ function prevImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
-    shapes=new Array();
 
 }
 
@@ -269,22 +266,7 @@ var ctx;
 var angle = 0;      // denotes the angle of the rotated image
 var temp_res = {};  // stores the temporary labels and its boxes (used in zooming and rotating)
 
-class Rectangle { 
-    constructor(ctx, x, y, w, h) {
-      this.ctx = ctx;
-      this.x = x;
-      this.y = y;
-      this.w = w;
-      this.h = h;
-   }
-    draw() {
-      // draw using ctx here
-      this.ctx.rect(this.x,this.y,this.w,this.h);
-        this.ctx.strokeStyle = 'black';
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
-   }
-} 
+
 $(document).ready(function () {
 
     canvas = document.getElementById('canvas');
@@ -328,7 +310,6 @@ $(document).ready(function () {
                     filelist.push(f.name);
                     results[f.name] = new Array();
                     temp_res[f.name] = new Array();
-                    
 
                 });
                 fileReader.readAsDataURL(f);
@@ -538,12 +519,6 @@ $(document).ready(function () {
 
         if (width != 0 && height != 0) {
 
-            rectangle = new Rectangle(ctx, last_mousex, last_mousey, width, height);
-            // save rectangle to an array
-            shapes.push(rectangle);
-            // redraw canvas
-            redraw();
-
             width = 0;
             height = 0;
 
@@ -559,17 +534,6 @@ $(document).ready(function () {
         }
 
     });
-
-    function redraw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        // console.log(shapes);
-        // draw all rectangle
-        shapes.forEach(function(shape) {
-        // draw shape
-        shape.draw();
-      
-    })
-    }
 
 
 
@@ -595,7 +559,6 @@ $(document).ready(function () {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 3;
             ctx.stroke();
-            redraw();
         }
         //Output
         // document.getElementById('output').innerHTML='current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown;
@@ -607,10 +570,6 @@ $(document).ready(function () {
             // ctx.clearRect(0,0,canvas.width,canvas.height); 
             input_ele.value = "";
             input_box.style.display = 'none'
-            shapes.pop();
-            ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
-            redraw();
-            ctx.stroke();
         };
     });
 
