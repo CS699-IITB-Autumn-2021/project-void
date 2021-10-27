@@ -1,10 +1,11 @@
 
 /**
- * Opens the image on the main window for labelling when a thumbnail is clicked from the left side bar
- *
+ * Opens the image on the main window for labelling when a thumbnail is clicked from the left side bar<br>
+ * Displays the saved labels and boxes when image is loaded <br>
+ * Resets the orientation and zoom factor of the image.
  * @param {string} img - contains image details
  */
-function expandImg(img) {
+ function expandImg(img) {
     var expandimg = document.getElementById("expimg")
     expandimg.src = img.src;
     expandimg.title = img.title;
@@ -27,7 +28,8 @@ function expandImg(img) {
 }
 
 /**
- * To draw the bounding box corresponding to the label
+ * To draw a specific bounding box corresponding to the arguments.<br>
+ * Clears the canvas before drawing the box.
  *
  * @param {int}  - x1 co-ordinate of the bounding box
  * @param {int}  - y1 co-ordinate of the bounding box
@@ -44,9 +46,10 @@ function drawLabelRect(x1, y1, x2, y2) {
 
 
 /**
- * To delete the label along with the bounding box
+ * To delete the label along with the bounding box when delete icon is clicked next to the label in the right side bar.<br>
+ * 
  *
- * @param {Array}  - string array of image title and corresponding label to delete
+ * @param {Array<string>}  - array of image title and corresponding label to delete
  */
 function deleteLabel(delarg) {
     var arg = delarg.split(",");
@@ -70,8 +73,9 @@ function deleteLabel(delarg) {
 
 
 /**
- * To display the labels on the right side bar
- *
+ * To display the labels on the right side bar whenever a new label is saved.<br>
+ * Provides the "delete" and "display all labels" buttons.<br>
+ * Updated on each new label entry.
  * @param {string}  - image title
  */
 function displayLabels(img) {
@@ -96,8 +100,8 @@ function displayLabels(img) {
 
 
 /**
- * To display the labels from the imported annotation file in the right side bar
- *
+ * To display the labels from the imported annotation file in the right side bar.<br>
+ * The imported labels have a white color border to differentiate with original labels.
  * @param {string}  - image title
  */
 function displayImportedLabels(img) {
@@ -120,7 +124,8 @@ function displayImportedLabels(img) {
 
 
 /**
- * Draws the imported annotation file lables and calls displayImportedLabels() function
+ * Draws the imported annotation file labels and displays the labels on the right side bar.<br>
+ * Resets the image orientation and zoom factor to original when invoked.
  *
  */
 function importLabels() {
@@ -172,7 +177,9 @@ function drawAllLabels(img_title) {
 
 
 /**
- * To slide to next image on the main window when a next button is clicked. These buttons follow a circular loop on thumbnail images
+ * To slide to next image on the main window when a next button is clicked.<br>
+ * Order is based on the thumbnail order stored in the left side bar using filelist array.<br>
+ * Follows a circular loop when the end is reached.
  *
  */
 function nextImg() {
@@ -195,7 +202,8 @@ function nextImg() {
 
 /**
  * To slide to previous image on the main window when a next button is clicked. These buttons follow a circular loop on thumbnail images
- *
+ * Order is based on the thumbnail order stored in the left side bar using filelist array.<br>
+ * Follows a circular loop when the end is reached.
  */
 function prevImg() {
     var currimg = document.getElementById("expimg");
@@ -411,7 +419,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Resize the canvas when the image is loaded in the main window using the current image's dimensions
+     * Resize the canvas when the image is loaded in the main window, using the current image's dimensions.
      * @function canvasResize
      */
     function canvasResize() {
@@ -432,7 +440,7 @@ $(document).ready(function () {
 
 
     /**
-     * Resize the canvas when the image is zoomed using the current image's dimensions and zoom factor
+     * Resize the canvas when the image is zoomed, using the current image's dimensions and zoom factor.
      * @function canvasResizeZoom
      */
     function canvasResizeZoom() {
@@ -456,7 +464,7 @@ $(document).ready(function () {
 
 
     /**
-     * Resize the canvas when the image is rotated using the current image's dimensions and rotated angle
+     * Resize the canvas when the image is rotated, using the current image's dimensions and rotated angle.
      * @function canvasResizeRotate
      */
     function canvasResizeRotate() {
@@ -538,6 +546,7 @@ $(document).ready(function () {
                 y2 = newy2;
 
             }
+            // if box is drawn over a zoomed image, calculate the coordinates of box of original zoom and add it to the results
             if (img_src[pic.title][1] != currWidth) {
                 var newboxes = resizeBoxes(x1, y1, x2, y2, ratio);
 
@@ -565,17 +574,15 @@ $(document).ready(function () {
     
     
     /**
-     * record the position of cursor when mouse is clicked
+     * Record the position of cursor when mouse is clicked <br>
      * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
      * @function addEventListener
      * 
-     * @param {mouse_event_type} mousedown
-     * @param {eventhandler_function}
+     * @param {mouse_event_type} - mousedown
+     * @event mousedown
+     * 
      */
     canvas.addEventListener('mousedown', function (e) {
-        /**
-        * @event mousedown
-        */
         input_box.style.display = 'none'
         input_ele.value = ""
 
@@ -586,17 +593,15 @@ $(document).ready(function () {
     });
 
     /**
-     * record the position of cursor when mouse button is released and draw the bounding as well as open the input box for recording the label 
+     * Record the position of cursor when mouse button is released and draw the bounding as well as open the input box for recording the label <br>
      * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
      * @function addEventListener
      * 
-     * @param {mouse_event_type} mouseup
-     * @param {eventhandler_function}
+     * @param {mouse_event_type}-  mouseup
+     * @event mouseup
+     * 
      */
     canvas.addEventListener('mouseup', function (e) {
-        /**
-        * @event mouseup
-        */
         mousedown = false;
 
 
@@ -622,17 +627,15 @@ $(document).ready(function () {
 
 
     /**
-     * record the position of cursor when mouse is moved and keep redrawing the previously rendered boxes along with the current box 
+     * Record the position of cursor when mouse is moved and keep redrawing the previously rendered boxes along with the current box 
      * Referred https://stackoverflow.com/questions/57419136/drawing-multiple-rectangles-on-canvas-without-clearing-the-back-image
      * @function addEventListener
      * 
-     * @param {mouse_event_type} mousemove
-     * @param {eventhandler_function}
+     * @param {mouse_event_type} - mousemove
+     * @event mousemove
+     * 
      */
     canvas.addEventListener('mousemove', function (e) {
-        /**
-        * @event mousemove
-        */
         let rect = canvas.getBoundingClientRect()
         mousex = parseInt(e.clientX - rect.left);
         mousey = parseInt(e.clientY - rect.top);
@@ -662,8 +665,9 @@ $(document).ready(function () {
      * When ESC key pressed, make the input box disappear
      * @function addEventListener
      * 
-     * @param {key_event_type} keyup
-     * @param {eventhandler_function}
+     * @param {key_event_type} - keyup
+     * 
+     * @event keyup
      */
     $(document).keyup(function (e) {
         if (e.keyCode == 27) {
@@ -675,7 +679,11 @@ $(document).ready(function () {
 
 
     /**
-    * To rotate the image and respective bouding boxes clockwise 
+    * To rotate the image and respective bouding boxes clockwise. <br>
+    * Updates the css transform property of image based on angle for clockwise rotation.<br>
+    * Updates all the bounding boxes coordinates based on clockwise rotation through given angle.<br>
+    * Referred: https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle
+    * 
     * @function clockwise
     */
     $('#clockwise').on('click', function () {
@@ -760,7 +768,9 @@ $(document).ready(function () {
 
     /**
     * To rotate the image and respective bouding boxes counterclockwise <br>
-    * 
+    * Updates the css transform property of image based on angle for counterclockwise rotation .<br>
+    * Updates all the bounding boxes coordinates based on counterclockwise rotation through given angle.<br>
+    * Referred: https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle <br>
     * @function counterclockwise
     */
     $('#counterclockwise').on('click', function () {
@@ -874,8 +884,10 @@ $(document).ready(function () {
     }
 
     /**
-     * To zoom in  the image and respective bouding boxes. 
-     * 
+     * To zoom in  the image and respective bouding boxes. <br>
+     * Increases image width by 100px for zoom in of image.<br>
+     * Updates all the bounding boxes coordinates based on how much image is zoomed in.<br>
+     * Referred : https://www.daniweb.com/programming/software-development/threads/296495/how-to-resize-the-drawn-rectangle-when-zoom-the-image#post1275345
      * @function zoomIn
      */
     $("#zoomin").click(function () {
@@ -929,8 +941,10 @@ $(document).ready(function () {
     });
 
     /**
-     * To zoom out the image and respective bouding boxes. 
-     * 
+     * To zoom out the image and respective bouding boxes.<br>
+     * Decreases image width by 100px for zoom in of image.<br>
+     * Updates all the bounding boxes coordinates based on how much image is zoomed out.<br>
+     * Referred : https://www.daniweb.com/programming/software-development/threads/296495/how-to-resize-the-drawn-rectangle-when-zoom-the-image#post1275345
      * @function zoomOut
      */
     $("#zoomout").click(function () {
@@ -988,5 +1002,4 @@ $(document).ready(function () {
     });
 
 });
-
 
