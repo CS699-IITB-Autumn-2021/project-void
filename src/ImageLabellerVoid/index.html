@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Annotator</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/bee49abcea.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="script.js"></script>
+
+</head>
+
+<body>
+    <div class="topnav">
+        Image Annotator
+    </div>
+
+    <!--tool box contains the all the import/export options and zoom,rotate buttons-->
+    <div class="toolbox">
+        <div class="dropdown">
+            <button class="dropbtn"><i class="fas fa-upload"></i> Upload files/folder</button>
+            <div class="dropdown-content">
+                <label for="file_upload"><i class="far fa-file"></i> Image Files</label>
+                <input id="file_upload" type="file" accept="image/*" name="files[]" multiple style="display: none; ">
+                <label for="folder_upload"><i class="far fa-folder"></i> Image Folder</label>
+                <input id="folder_upload" type="file" webkitdirectory mozdirectory style="display: none;">
+                <label for="json_upload" title="Upload in csv or json format"><i class="fas fa-file-import"></i> Import
+                    Labels</label>
+                <input id="json_upload" type="file" style="display: none; ">
+            </div>
+        </div>
+
+        <!-- Icons taken from https://www.flaticon.com and https://www.fontaweseom.com > -->
+        <button id="tools" data-title="Import Labels" onclick="importLabels()"><img src="icons/square.png"
+                id="icons"></i></button>
+        <button id="zoomin" data-title="Zoom In"><img src="icons/zoom-in.png" id="icons"></button>
+        <button id="zoomout" data-title="Zoom Out"><img src="icons/zoom-out.png" id="icons"></button>
+        <button id="counterclockwise" data-title="Rotate Left"><img src="icons/rotate_left.png" id="icons"></button>
+        <button id="clockwise" data-title="Rotate Right"><img src="icons/rotate_right.png" id="icons"></button>
+        <div class="dropdown">
+
+            <button id="export_btn" class="dropbtn"><i class="fas fa-file-export"></i> Export Labels</button>
+            <div class="dropdown-content">
+
+                <label onclick="exportJson()"><i class="fas fa-file-export"></i> JSON File</label>
+                <label onclick="exportCsv()"><i class="fas fa-file-export"></i> CSV File</label>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- left side bar for images preview -->
+    <div class="leftpane">
+        <output id="imgnav" />
+    </div>
+    <!-- Main window for labelling -->
+    <div class="middlepane">
+
+        <div class="container-fluid">
+
+            <div class="img-container" style="position:relative;">
+                <img id="expimg">
+                <canvas id="canvas" style="position: absolute; top:0;left:0;"></canvas>
+
+                <!-- <div id="output"> </div> -->
+                <div id="input-box"> Tag: <input type="text" name="input-ele" id="input-ele"> </div>
+            </div>
+
+            <button id="prevbtn" title="previous image" onclick="prevImg()"><i
+                    class="fas fa-step-backward"></i></button>
+            <button id="nextbtn" title="next image" onclick="nextImg()"><i class="fas fa-step-forward"></i></button>
+        </div>
+    </div>
+    <!-- set of labels shown on right side bar -->
+    <div class="rightpane">
+        <div class="labelnav">
+            <label id="heading">List of Labels</label>
+            <output id="label" />
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

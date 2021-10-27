@@ -1,4 +1,4 @@
-# README
+# course-project-template
 **Problem Statement or Motivation.**
 Many ML models use supervised learning, which performs mapping of oneinput to one output.  We need a labeled dataset that the model can learnfrom to make correct predictions.  Before any such model is trained, thedata set needs to be labelled by human labelers.  It is their task to tag allthe images correctly and mostly consists of tagging some portion of theimage with the correct label.  The ML models then use thehuman-provided labels to learn features during training.  Once trained, themodels are then used to classify new data.The accuracy of the model depends on the accuracy of the ground truth.Therefore having a accurately labelled data is essential
 Usually models require huge set of labeled data and we need a tool that makes this task simpler and facilitates the labeling process.
