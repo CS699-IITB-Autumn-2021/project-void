@@ -19,6 +19,7 @@ function expandImg(img) {
     temp_res[img.title] = JSON.parse(JSON.stringify(results[img.title]));
     angle = 0;
     displayLabels(img.title);
+   
 
     // console.log(results[img.title]);
     // console.log(temp_res[img.title]);
@@ -63,7 +64,9 @@ function deleteLabel(delarg) {
     results[arg[0]].splice(tmp, 1);
     temp_res[arg[0]].splice(tmp, 1);
     displayLabels(arg[0]);
+
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+    
 }
 
 
@@ -152,6 +155,7 @@ function importLabels() {
 }
 
 function drawAllLabels(img_title) {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
     for (var i = 0; i < temp_res[img_title].length; i++) {
         for (const [k, v] of Object.entries(temp_res[img_title][i])) {
@@ -185,6 +189,7 @@ function nextImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
+  
 
 }
 /**
@@ -208,6 +213,7 @@ function prevImg() {
     temp_res[currimg.title] = JSON.parse(JSON.stringify(results[currimg.title]));
     angle = 0;
     displayLabels(currimg.title);
+  
 
 }
 
@@ -372,6 +378,7 @@ $(document).ready(function () {
             canvas.width = image_width;
             canvas.height = image_height;
             ctx = canvas.getContext('2d');
+            drawAllLabels(pic.title)
         })
 
 
@@ -549,6 +556,9 @@ $(document).ready(function () {
             // prev_h = height;
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
             // ctx.clearRect(prev_x-1, prev_y-1, prev_w+2, prev_h+2);
+
+          
+            drawAllLabels(pic.title);
 
             ctx.beginPath();
             width = mousex - last_mousex;
