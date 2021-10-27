@@ -149,6 +149,7 @@ $(document).ready(function () {
                     img_src[f.name] = temp;
                     filelist.push(f.name);
                     results[f.name] = new Array();
+                    shapes=new Array();
                     
                 });
                 fileReader.readAsDataURL(f);
