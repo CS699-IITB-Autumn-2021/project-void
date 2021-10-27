@@ -879,8 +879,7 @@ $(document).ready(function () {
             //resize canvas w.r.t the zoomed image
             canvasResizeZoom();
 
-            for (var i = 0; i < temp_res[pic.title].length; i++) {
-                for (const [key, value] of Object.entries(temp_res[pic.title][i])) {
+         
 
             for (var i = 0; i < temp_res[pic.title].length; i++) {
                 for (const [key, value] of Object.entries(temp_res[pic.title][i])) {
